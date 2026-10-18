@@ -1,0 +1,95 @@
+{
+  "manifest_version": 3,
+  "name": "OljExtension",
+  "version": "1.2.0",
+  "description": "OnlineJobs.ph job-seeker tools: rate filtering, scam/red-flag checks & an application tracker, plus optional AI insights & drafting.",
+  "permissions": [
+    "storage"
+  ],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "OljExtension",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    },
+    "default_popup": "src/popup/popup.html"
+  },
+  "options_ui": {
+    "page": "dist/options/index.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.onlinejobs.ph/jobseekers/jobsearch*",
+        "https://www.onlinejobs.ph/jobseekers/job/*"
+      ],
+      "js": [
+        "src/content/content.js"
+      ],
+      "css": [
+        "vendor/winbox/winbox.min.css",
+        "src/content/content.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://v2.onlinejobs.ph/jobseekers*"
+      ],
+      "js": [
+        "src/content/v2.js"
+      ],
+      "css": [
+        "vendor/winbox/winbox.min.css",
+        "src/content/content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/content/*.js",
+        "src/core/*.js",
+        "vendor/winbox/*.js",
+        "dist/options/index.html",
+        "dist/options/*.js",
+        "dist/options/*.css",
+        "dist/options/assets/*"
+      ],
+      "matches": [
+        "https://www.onlinejobs.ph/*",
+        "https://v2.onlinejobs.ph/*"
+      ]
+    }
+  ],
+  "host_permissions": [
+    "https://oljextension.site/*",
+    "http://localhost:3100/*"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://oljextension.site/*",
+      "http://localhost/*"
+    ]
+  },
+  "optional_permissions": [
+    "alarms",
+    "notifications"
+  ],
+  "optional_host_permissions": [
+    "https://www.onlinejobs.ph/*"
+  ]
+}

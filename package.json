@@ -1,0 +1,31 @@
+{
+  "name": "onlinejobs-rate-filter",
+  "version": "1.3.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Chrome extension that collapses onlinejobs.ph listings paying below a threshold.",
+  "scripts": {
+    "build": "vite build",
+    "package": "vite build && node scripts/package.mjs",
+    "dev": "vite",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "node test/e2e/free-features.mjs && node test/e2e/options-and-pages.mjs && node test/e2e/kanban.mjs"
+  },
+  "dependencies": {
+    "mammoth": "^1.12.1",
+    "pdfjs-dist": "^6.2.108",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "winbox": "^0.2.82"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^25.0.1",
+    "lucide-static": "^1.33.0",
+    "playwright-core": "^1.62.1",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  }
+}

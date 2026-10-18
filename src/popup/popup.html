@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>OljExtension</title>
+  </head>
+  <body>
+    <header class="head">
+      <h1>OljExtension</h1>
+      <p class="sub" id="sub">Power tools for OnlineJobs.ph — filtering, red flags and drafts, all on your machine. An account only adds the AI features.</p>
+    </header>
+
+    <!-- Applications waiting on you. Hidden when nothing is due. -->
+    <section id="followups" class="pane todo" hidden>
+      <h2 class="todo-title">Follow up</h2>
+      <ul id="followup-list" class="todo-list"></ul>
+    </section>
+
+    <!-- New listings for watched searches. Hidden when alerts are off or quiet. -->
+    <section id="matches" class="pane todo" hidden>
+      <h2 class="todo-title">New listings</h2>
+      <ul id="match-list" class="todo-list"></ul>
+      <p class="muted small"><a href="#" id="mark-seen">Mark all seen</a></p>
+    </section>
+
+    <!-- Which of these is shown is decided in popup.js once storage answers. -->
+    <section id="loading" class="pane">
+      <p class="muted">Checking…</p>
+    </section>
+
+    <!--
+      No password field, on purpose. Signing in happens on the website: the
+      button opens the connect page, which hands the extension its own session
+      token. The extension never sees a password, which is also what keeps the
+      store listing's authentication-information box honestly unticked.
+    -->
+    <section id="signed-out" class="pane" hidden>
+      <p class="error" id="error" role="alert" hidden></p>
+
+      <button type="button" id="connect" class="primary">Sign in on oljextension.site</button>
+
+      <p class="muted small">
+        A tab opens on our website; sign in (or create your account) there and press
+        <strong>Connect</strong>. New account? Use your OnlineJobs.ph email &mdash;
+        that match is what releases your 5 free credits.
+      </p>
+
+      <p class="muted small">
+        <a href="#" id="open-site">Open the website</a>
+      </p>
+    </section>
+
+    <section id="signed-in" class="pane" hidden>
+      <dl class="facts">
+        <div><dt>Signed in</dt><dd id="email"></dd></div>
+        <div><dt>Credits</dt><dd id="credits">—</dd></div>
+        <div><dt>AI billing</dt><dd id="ai-billing">—</dd></div>
+      </dl>
+
+      <!-- Verification. Shown only until the account is verified. -->
+      <section id="verify" class="notice" hidden>
+        <p class="notice-title">Verify your OnlineJobs.ph account</p>
+        <p class="notice-body" id="verify-body">
+          AI features need a verified account. We check that the email on your
+          OnlineJobs.ph account matches this one, and add 5 free credits when it does.
+        </p>
+        <button type="button" id="verify-btn" class="primary">Verify my OnlineJobs.ph account</button>
+      </section>
+
+      <!-- Low-credit nudge. Shown only at 5 or fewer. -->
+      <section id="nudge" class="notice" hidden>
+        <p class="notice-title" id="nudge-title"></p>
+        <p class="notice-body" id="nudge-body"></p>
+        <div class="notice-actions">
+          <button type="button" id="get-credits" class="primary" hidden>Get Credits</button>
+          <button type="button" id="invite" class="secondary" hidden>Invite friends</button>
+        </div>
+      </section>
+
+      <p class="muted small" id="account-note">
+        Credits are spent only by AI features, and only when you ask for one.
+      </p>
+
+      <!--
+        The get-paid ops subscription. Separate from credits on purpose: credits
+        are spent per AI run, this is a window of time, and collapsing the two
+        into one number is how people end up surprised by what they bought.
+      -->
+      <section id="subscription" class="notice" hidden>
+        <p class="notice-title" id="sub-title"></p>
+        <p class="notice-body" id="sub-body"></p>
+        <div class="notice-actions">
+          <button type="button" id="sub-trial" class="primary" hidden></button>
+          <button type="button" id="sub-activate" class="secondary" hidden></button>
+        </div>
+      </section>
+
+      <!--
+        The dashboard is where credits, subscription, referrals and the
+        freelancer tools live. It is only reachable once signed in, so the
+        button sits in this pane rather than in the footer.
+      -->
+      <button type="button" id="open-dashboard" class="primary">Open my dashboard</button>
+      <button type="button" id="sign-out" class="secondary">Sign out</button>
+    </section>
+
+    <footer class="foot">
+      <label class="switch" title="Turn our tools on or off on OnlineJobs.ph. Off leaves the site exactly as it is; open tabs reload to apply.">
+        <input type="checkbox" id="inject-toggle" checked />
+        <span class="slider" aria-hidden="true"></span>
+        <span class="switch-text">On this site</span>
+      </label>
+      <button type="button" id="open-options" class="link">All settings</button>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output.
+#
+# The options page is a Vite build; `npm run build` regenerates it, and its
+# asset filenames are content-hashed, so committing it would churn on every
+# build. A fresh clone must run the build once before loading the extension -
+# see the Install section of the README.
+dist/
+
+# The Chrome Web Store upload package. It is a zipped copy of dist/, which is
+# already ignored above, so committing it would put the same churn in history
+# twice - once content-hashed, once compressed. Rebuild it when you upload.
+*.zip
+
+# Secrets. Never commit these.
+.env
+.env.*
+!.env.example
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# OS and OneDrive noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and caches
+*.log
+npm-debug.log*
+.vite/
+coverage/
+applicant-review/

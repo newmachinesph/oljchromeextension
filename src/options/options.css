@@ -1,0 +1,2943 @@
+:root {
+  --bg: #f4f6f9;
+  --card: #ffffff;
+  --ink: #1c2733;
+  --muted: #6b7684;
+  --line: #e2e7ee;
+  --accent: #2f6fdb;
+  color-scheme: light;
+
+  /*
+   * Control metrics.
+   *
+   * Every input, select and button derives its height, padding, radius and
+   * border from these. Before they existed there were five button paddings and
+   * two near-identical text inputs, and the drift was being patched downstream
+   * with one-off `height: 36px` overrides - which is the shape of a problem
+   * that comes back. One row height, declared once.
+   */
+  --control-h: 36px;
+  --control-h-sm: 30px;
+  --control-h-xs: 24px;
+  --control-pad-x: 10px;
+  --control-pad-x-sm: 11px;
+  --control-pad-x-xs: 10px;
+  --control-radius: 7px;
+  --control-border: var(--line);
+  --control-font: 14px;
+  --control-font-sm: 12.5px;
+  --control-font-xs: 12px;
+}
+
+/*
+ * The control primitives.
+ *
+ * `.control` is the shared skin: the same box every focusable thing in the
+ * settings wears. `.btn` and `.text-input` add only what actually differs -
+ * buttons centre their label and take a pointer, inputs stretch and take a
+ * caret. Anything that needs to sit on one line with an input is now the same
+ * height by construction rather than by a hand-tuned override.
+ */
+.control,
+.btn,
+.text-input {
+  height: var(--control-h);
+  padding: 0 var(--control-pad-x);
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: inherit;
+  font: var(--control-font) / 1.4 inherit;
+  box-sizing: border-box;
+}
+
+.control:focus-visible,
+.btn:focus-visible,
+.text-input:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(47, 111, 219, 0.14);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Variants differ only in colour, never in metrics. */
+.btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #2760c2;
+  border-color: #2760c2;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: #b6c2d3;
+  background: #f7f9fc;
+}
+
+.btn-danger:hover:not(:disabled) {
+  border-color: #f2c9c9;
+  background: #fdf1f1;
+  color: #c0392b;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  background: none;
+  color: var(--muted);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: #f2f5fa;
+  color: var(--ink);
+}
+
+/*
+ * Textareas opt out of the fixed row height.
+ *
+ * `.text-input` pins a height so inputs, selects and buttons line up; a
+ * textarea has to grow with its `rows` instead, so it takes the skin and
+ * restores auto height and symmetric vertical padding.
+ */
+textarea.text-input {
+  height: auto;
+  padding: 7px var(--control-pad-x);
+  line-height: 1.45;
+}
+
+/* Presets ----------------------------------------------------------------- */
+
+.preset-toolbar {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+/*
+ * The draft editor sits above the list rather than inside a row: editing a
+ * preset changes several fields at once, and a form that pushes the list around
+ * as you type is worse than one that sits still in a known place.
+ */
+.preset-editor {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: #f7f9fe;
+}
+
+.preset-editor-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.preset-editor-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.preset-row-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Level, "measured", "edited" - all the same chip, so none shouts. */
+.preset-badge {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  vertical-align: 1px;
+}
+
+/* Measured is the one claim backed by counted listings, so it reads as a fact. */
+.preset-badge.measured {
+  border-color: #bcd7bd;
+  background: #f0f7f0;
+  color: #2f6b34;
+}
+
+/*
+ * The required asterisk. Advisory - the settings autosave, so nothing blocks.
+ */
+.field-req {
+  margin-left: 3px;
+  color: #c0392b;
+  font-weight: 700;
+}
+
+/* Sizes. Only the three metrics change; colour is orthogonal. */
+.btn-sm {
+  height: var(--control-h-sm);
+  padding: 0 var(--control-pad-x-sm);
+  font-size: var(--control-font-sm);
+}
+
+.btn-xs {
+  height: var(--control-h-xs);
+  padding: 0 var(--control-pad-x-xs);
+  font-size: var(--control-font-xs);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.app {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 32px 20px 56px;
+}
+
+/* Tabs, so the settings are found rather than scrolled past. */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 20px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.tab {
+  flex: 1 1 auto;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--muted);
+  font: 600 13.5px/1.4 inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.tab:hover {
+  background: #f2f5fa;
+  color: var(--ink);
+}
+
+.tab-on,
+.tab-on:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.loading {
+  color: var(--muted);
+}
+
+.header h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.header p {
+  margin: 0 0 24px;
+  max-width: 56ch;
+  color: var(--muted);
+}
+
+.section {
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.section h2 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.section-desc {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-weight: 600;
+}
+
+/*
+ * A button in a field is as wide as its own label.
+ *
+ * The field is a column, and a column stretches its children, so a one-line
+ * action ended up spanning the whole panel and reading as a banner rather than
+ * a button. The small top margin separates it from the hint above, which sits
+ * at the field's 4px gap because it is prose, not a control.
+ */
+.field > .btn,
+.field > .reset {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.field-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field input[type="number"],
+/*
+ * Kept as an alias rather than deleted: it was a near-copy of .text-input
+ * (7px/9px against 7px/10px, 6px radius against 7px) and the difference was
+ * never intentional. Same skin now, so the two cannot drift again.
+ */
+.preview-input {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--control-pad-x);
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: inherit;
+  font: var(--control-font) / 1.4 inherit;
+  box-sizing: border-box;
+}
+
+/*
+ * A number field is as wide as the number it holds, not as wide as the panel.
+ * These take 1-5 digits (a rate, a count of minutes, a percentage); stretching
+ * them edge to edge made a 3-digit rate look like a text area and pushed its
+ * unit suffix off to the far side, where it stopped reading as a unit.
+ */
+.field input[type="number"] {
+  width: 10ch;
+  flex: 0 0 auto;
+}
+
+.field input[type="checkbox"],
+.field input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+.field-toggle .field-control {
+  gap: 10px;
+}
+
+.field-suffix {
+  color: var(--muted);
+}
+
+.field-hint {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/*
+ * Radios sit on one line each or wrap as whole options - never mid-label.
+ * Without the wrap the row squeezes seven intervals into the width it has and
+ * "Every 5 minutes" breaks across two lines, which reads as two options.
+ */
+.field-radios {
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* Chips are their own row of choices; they sit closer than labelled radios. */
+.field-chips {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.preview-samples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preview-samples button {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #f7f9fc;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.preview-samples button:hover {
+  background: #eaf1fd;
+}
+
+.preview-result {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 6px 16px;
+  margin: 4px 0 0;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: #f7f9fc;
+  font-size: 14px;
+}
+
+.preview-result dt {
+  color: var(--muted);
+}
+
+.preview-result dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.verdict-hide {
+  font-weight: 700;
+  color: #b0473a;
+}
+
+.verdict-keep {
+  font-weight: 700;
+  color: #1e7a4d;
+}
+
+.verdict-reason {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+/*
+ * Right-aligned, under the panel it belongs to.
+ *
+ * Left-aligned it sat under the nav column instead of under the settings, so
+ * "Reset to defaults" read as though it applied to the tab list rather than to
+ * the settings you were looking at - and a destructive action pointing at the
+ * wrong thing is worth moving. Ending the content column also puts it where a
+ * form's actions are expected to be.
+ */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+/* The workhorse secondary button. Metrics from the tokens, same as .btn. */
+.reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--control-h);
+  padding: 0 var(--control-pad-x);
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--ink);
+  font: var(--control-font) / 1.4 inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.reset:hover {
+  border-color: #b0473a;
+  color: #b0473a;
+}
+
+.saved {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ---------------------------------------------------------------- *
+ * Custom parsers
+ * ---------------------------------------------------------------- */
+
+.text-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: inherit;
+  font: 14px/1.4 inherit;
+}
+
+.text-input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(47, 111, 219, 0.14);
+}
+
+.text-input.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+/* A pattern that will not compile, marked as you type rather than on save. */
+.text-input.invalid {
+  border-color: #d98383;
+  background: #fdf6f6;
+}
+
+.rules-empty {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 9px;
+  color: var(--muted);
+}
+
+.rule-list {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.rule {
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+
+/* Kept legible rather than greyed to nothing - a disabled rule is still a rule
+   you are in the middle of writing. */
+.rule-off {
+  background: #f6f7f9;
+  opacity: 0.72;
+}
+
+.rule-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.rule-enable {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.rule-name {
+  flex: 1 1 auto;
+  font-weight: 600;
+}
+
+/* Small secondary button. Same skin, the sm metrics. */
+.rule-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-h-sm);
+  padding: 0 var(--control-pad-x-sm);
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--muted);
+  font: 600 var(--control-font-sm) / 1.4 inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.rule-remove:hover {
+  border-color: #f2c9c9;
+  background: #fdf1f1;
+  color: #c0392b;
+}
+
+.rule-error {
+  margin: -4px 0 10px;
+  color: #c0392b;
+  font-size: 12.5px;
+}
+
+.rule-selects {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.rule-selects .field {
+  flex: 1 1 0;
+}
+
+.rule-selects select {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: inherit;
+  font: 14px/1.4 inherit;
+}
+
+.rule-test {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.rule-result {
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+
+.rule-match {
+  color: #1f6b45;
+}
+
+.rule-nomatch {
+  color: var(--muted);
+}
+
+.rules-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.rules-examples-heading {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/*
+ * The dock panel builds its own container instead of using .section-body, so
+ * it never inherited the 16px rhythm every other section has: toggles, their
+ * hints and the edge radios all ran together, and a hint sat as close to the
+ * next control as to the one it describes.
+ */
+.dock-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/*
+ * "In the dock" starts a different job - arranging the contents rather than
+ * setting the dock up - so it gets a rule and real air above it instead of
+ * reading as one more field label.
+ */
+.dock-settings .rules-examples-heading {
+  margin: 4px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line, #eef1f5);
+}
+
+.rules-examples {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rules-examples li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--card);
+}
+
+.rules-examples li > div {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rules-examples code {
+  overflow-x: auto;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: #f2f5fa;
+  color: #2f4560;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  white-space: pre;
+}
+
+.reset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------- *
+ * Built-in parser vocabulary
+ * ---------------------------------------------------------------- */
+
+.vocab-row {
+  margin-bottom: 12px;
+}
+
+.vocab-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  gap: 10px;
+}
+
+.vocab-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Only shown once a group differs from the shipped list. */
+.vocab-reset {
+  padding: 2px 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--muted);
+  font: 600 11.5px/1.5 inherit;
+  cursor: pointer;
+}
+
+.vocab-reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.vocab .section-desc code,
+.rules .section-desc code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #f2f5fa;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------- *
+ * Applicant profile
+ * ---------------------------------------------------------------- */
+
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+  font: 14px/1.5 inherit;
+}
+
+/* The intro explains where this data lives; it should not touch the first field. */
+.profile .section-desc {
+  margin-bottom: 20px;
+}
+
+.profile .field {
+  margin-bottom: 14px;
+}
+
+.profile .rule-selects .field {
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------------- *
+ * Backup and restore
+ * ---------------------------------------------------------------- */
+
+.backup .section-desc {
+  margin-bottom: 14px;
+}
+
+.backup-counts {
+  margin: 0 0 16px;
+}
+
+.backup input[type="file"] {
+  display: block;
+  margin: 10px 0 0;
+  font: 13px/1.5 inherit;
+}
+
+/* A restore replaces five stores, so what it found is shown before it runs. */
+.backup-pending {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #f2ddb4;
+  border-radius: 9px;
+  background: #fdf3e2;
+}
+
+.backup-pending p {
+  margin: 0 0 6px;
+}
+
+.backup-pending .rules-actions {
+  margin: 12px 0 0;
+}
+
+.backup-note {
+  margin-top: 14px;
+  color: #1e7a4d;
+}
+
+/* ------------------------------------------------------------------ *
+ * Saved searches and the shipped presets
+ *
+ * One row shape for both, since the only difference between "a search
+ * you named" and "a search we shipped" is where it came from.
+ * ------------------------------------------------------------------ */
+
+.search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Takes the slack, so the buttons line up down the right whatever the
+   name's length. min-width lets a long hint ellipsize instead of
+   pushing the buttons off the panel. */
+.search-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-main em {
+  color: var(--muted, #6b7684);
+  font-style: normal;
+}
+
+.search-row button {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: inherit;
+  font: 600 13px/1.3 inherit;
+  cursor: pointer;
+}
+
+.search-row button:hover:not(:disabled) {
+  border-color: #2f6fdb;
+  color: #2f6fdb;
+}
+
+.search-row button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Employers you blocked or wrote about, one row each. */
+.employer-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.employer-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #e3e8ef;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.employer-name {
+  font-weight: 600;
+}
+
+.employer-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #f1f4f8;
+  color: #46546a;
+  font-size: 12px;
+}
+
+.employer-note {
+  color: #5b6573;
+  font-style: italic;
+}
+
+.employer-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+/* The application funnel. */
+.funnel-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.funnel-tile {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid #e3e8ef;
+  border-radius: 10px;
+  background: #fafbfd;
+}
+
+.funnel-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.funnel-label {
+  font-size: 12px;
+  color: #5b6573;
+}
+
+.funnel-heading {
+  margin: 18px 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #5b6573;
+}
+
+/*
+ * The one table skin.
+ *
+ * There were four, and they had drifted: four paddings, three header
+ * treatments, and one - the salary read-out - with no rules at all, which left
+ * it looking like loose text that happened to line up. Same story the buttons
+ * had before `.btn`, same answer. A table that needs to differ does it with a
+ * modifier below, not by restating the metrics.
+ *
+ * `separate` rather than `collapse` so the rounded corners actually clip; the
+ * row rules are drawn per cell instead, and the last row drops its own.
+ */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  font-size: 13px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--line, #eef1f5);
+}
+
+.data-table thead th {
+  border-bottom-color: var(--border, #e5e7eb);
+  background: var(--sunken, #f6f7f9);
+  color: var(--muted, #6b7280);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* A row's leading cell names the row; it reads as a label, not as data. */
+.data-table tbody th {
+  color: var(--muted, #6b7280);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table tbody tr:last-child th,
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/*
+ * Figures line up under each other: one digit width, right-aligned, so the
+ * eye compares magnitudes down a column instead of re-reading every row.
+ */
+.data-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.data-table thead th.num {
+  text-align: right;
+}
+
+.funnel-table {
+  max-width: 480px;
+}
+
+.funnel-table tr.muted td {
+  color: #a3adba;
+}
+
+.application-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.application-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "title actions" "when actions";
+  column-gap: 12px;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid #e3e8ef;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.application-title {
+  grid-area: title;
+  font-weight: 600;
+  color: #1c2733;
+  text-decoration: none;
+}
+
+.application-title:hover {
+  color: #2f6fdb;
+}
+
+.application-when {
+  grid-area: when;
+  color: #5b6573;
+  font-size: 12px;
+}
+
+.application-actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.application-actions select {
+  font: inherit;
+  font-size: 12px;
+  padding: 3px 6px;
+}
+
+/* Watched searches, for alerts. */
+.watched-list {
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.watched-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) 2fr auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 5px 10px;
+  border: 1px solid #e3e8ef;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.watched-name {
+  font-weight: 600;
+}
+
+.watched-terms {
+  color: #5b6573;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watched-status {
+  color: #5b6573;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* About-you links, and the profiles list. */
+.link-list { margin: 0 0 8px; padding: 0; list-style: none; display: grid; gap: 6px; }
+.link-row { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr auto; gap: 8px; align-items: center; }
+.link-label, .link-url { font-size: 13px; }
+
+.profile-list { margin: 0 0 12px; padding: 0; list-style: none; display: grid; gap: 10px; }
+.profile-card { padding: 12px 14px; border: 1px solid #e3e8ef; border-radius: 10px; background: #fafbfd; }
+.profile-head { display: flex; align-items: center; gap: 8px; }
+.profile-name { font-weight: 700; }
+.profile-badge { padding: 1px 8px; border-radius: 999px; background: #e4edfb; color: #1f4f9c; font-size: 12px; }
+.profile-headline { margin: 4px 0 0; color: #46546a; font-size: 13px; }
+.profile-roles { margin: 4px 0 0; color: #5b6573; font-size: 12.5px; }
+.profile-preview { margin: 6px 0 0; color: #7a828f; font-size: 12.5px; white-space: pre-wrap; }
+.profile-actions { margin-top: 10px; display: flex; gap: 8px; }
+
+.profile-editor { display: grid; gap: 4px; }
+.file-button { display: inline-block; cursor: pointer; }
+
+/*
+ * A file picker dressed as the standard secondary button. The native control
+ * cannot be styled, so the input hides and its label carries the button look -
+ * metrics from the control tokens, hover from the secondary button.
+ */
+.file-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--control-h);
+  padding: 0 var(--control-pad-x);
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--ink);
+  font: var(--control-font) / 1.4 inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+.file-btn:hover {
+  border-color: #b6c2d3;
+  background: #f7f9fc;
+}
+/* The input rides inside the label only to receive the click. Its `hidden`
+   attribute loses to any styled `input` rule with real specificity, so hide
+   it here, where the specificity is ours. */
+.file-btn input[type='file'] {
+  display: none;
+}
+
+/* The Conversion section's compact currency grid: one row per currency. */
+.fx-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 440px;
+}
+.fx-table th,
+.fx-table td {
+  padding: 3px 12px 3px 0;
+  text-align: left;
+  font-weight: 400;
+}
+.fx-table thead th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 1px solid var(--control-border);
+  padding-bottom: 6px;
+}
+.fx-table tbody th {
+  white-space: nowrap;
+}
+.fx-table .fx-code {
+  font-weight: 600;
+}
+.fx-table .fx-name {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.fx-table .fx-peg {
+  margin-left: 8px;
+  padding: 0 7px;
+  border: 1px solid var(--control-border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.fx-table input[type='number'] {
+  width: 108px;
+  height: var(--control-h);
+  padding: 0 8px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  box-sizing: border-box;
+  font: var(--control-font) / 1.4 inherit;
+}
+
+/* Salary calculator ------------------------------------------------------- */
+.salary-calc-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+.salary-calc-inputs .field {
+  flex: 1 1 120px;
+  min-width: 90px;
+}
+/* Two rows of figures: sized to them rather than stretched across the panel. */
+.salary-calc-out {
+  width: auto;
+  min-width: 260px;
+  margin-top: 16px;
+}
+/* Every data cell here is money, so the whole body gets the figure treatment. */
+.salary-calc-out thead th:not(:first-child),
+.salary-calc-out td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Saved jobs -------------------------------------------------------------- */
+.saved-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.saved-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.saved-card {
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 12px;
+}
+.saved-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.saved-title {
+  font-weight: 600;
+}
+.saved-remove {
+  color: var(--muted, #6b7280);
+  font-size: 13px;
+}
+.saved-meta {
+  display: flex;
+  gap: 12px;
+  margin: 4px 0 8px;
+  color: var(--muted, #6b7280);
+  font-size: 13px;
+}
+.saved-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.tag-chip {
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+.tag-chip-on {
+  background: var(--accent-soft, #eef2ff);
+  border-color: var(--accent, #2f6fdb);
+}
+.tag-remove {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-left: 4px;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1;
+}
+.tag-add {
+  border: 1px dashed var(--border, #d1d5db);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  width: 72px;
+  background: transparent;
+  color: inherit;
+}
+.saved-note {
+  width: 100%;
+  resize: vertical;
+  /* The tag row already carries 8px beneath it; this doubles the gap so the
+     note reads as its own block rather than another line of the tag cluster. */
+  margin-top: 8px;
+}
+
+/* Application board (kanban) --------------------------------------------- */
+/*
+ * The board fills its frame; lanes stretch to it and scroll inside themselves.
+ *
+ * align-items was flex-start, which sizes every lane to its own contents - and
+ * a max-height on a lane means nothing while its parent has no height to be a
+ * percentage of. Stretching them to a bounded row is what actually turns "too
+ * many cards" into a scrollbar instead of a taller board.
+ */
+.kanban {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/*
+ * Board-only view (?view=board), inside the content script's modal.
+ *
+ * The settings page is a document you scroll; the board is a workspace that
+ * fits the window. Only this view takes the whole height, so the tabbed page
+ * is untouched.
+ */
+.board-view {
+  display: flex;
+  flex-direction: column;
+  max-width: none;
+  height: 100vh;
+  padding: 16px 20px;
+}
+
+.board-view > * {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+/*
+ * A lane is a column with a ceiling, not a column that grows forever.
+ *
+ * Without a cap, twenty cards in one lane stretched the whole board and every
+ * other lane with it, so reaching the bottom of "Applied" meant scrolling the
+ * page past four empty columns. The lane scrolls inside itself instead: the
+ * board keeps one height, and each lane carries its own overflow.
+ */
+.kanban-col {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 200px;
+  background: var(--sunken, #f6f7f9);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 8px;
+  min-height: 80px;
+  /* Fits the board frame, which is itself sized to the modal. */
+  max-height: 100%;
+  min-height: 0;
+}
+.kanban-col-over {
+  border-color: var(--accent, #2f6fdb);
+  background: var(--accent-soft, #eef2ff);
+}
+.kanban-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+.kanban-title {
+  font-weight: 600;
+  font-size: 13px;
+}
+.kanban-count {
+  font-size: 12px;
+  color: var(--muted, #6b7280);
+  background: var(--border, #e5e7eb);
+  border-radius: 999px;
+  padding: 0 8px;
+  min-width: 20px;
+  text-align: center;
+}
+.kanban-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* The scrolling part. min-height:0 is what actually lets a flex child
+     shrink below its content and scroll rather than push the lane taller. */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /*
+   * Room above the first card for the drop indicator.
+   *
+   * The line sits 6px above its card and carries a 2px halo, so it needs about
+   * nine. With two, the scroll container clipped it - and the one card where
+   * that matters most is the first, because dropping at the very top of a lane
+   * then gave no feedback at all.
+   *
+   * The horizontal padding does the same job for the halo, and the negative
+   * margin gives it back so the cards still span the lane's full width.
+   */
+  /* Exactly enough: the line sits 6px above its card with a 2px halo, so eight
+     clears it and anything more just pushes the first card down the lane. */
+  padding: 8px 4px 4px;
+  margin: -4px -4px -4px;
+}
+
+/*
+ * Where a dragged card would land.
+ *
+ * A line ABOVE the target rather than a highlight on it: the card is going in
+ * front of this one, and tinting the target would say "into this one" instead -
+ * which is what a lane drop does, and the two must not look alike.
+ *
+ * Drawn as a pseudo-element rather than a box-shadow so it has real thickness
+ * at any zoom, sits in the 8px gap between cards instead of on top of the card
+ * below it, and cannot be clipped by the lane's own overflow.
+ */
+.kanban-card-drop {
+  position: relative;
+}
+
+.kanban-card-drop::before {
+  content: '';
+  position: absolute;
+  /* Flush with the card. The overhang existed to lead into a dot on the left;
+     without it, an asymmetric bar just looks misaligned. */
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent, #2f6fdb);
+  /* The 8px gap between cards already reads as a faint grey line, so a thin
+     accent bar in it is indistinguishable from the gap. The halo separates
+     them. */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 2px 6px rgba(47, 111, 219, 0.55);
+  z-index: 2;
+}
+
+/* Which edge the card will land against, decided by the half of the target the
+   pointer is in. Without the bottom case the last slot in a lane is
+   unreachable: nothing sits after the final card to aim at. */
+.kanban-card-drop-top::before { top: -6px; }
+.kanban-card-drop-bottom::before { bottom: -6px; }
+
+.kanban-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 6px;
+  padding: 8px;
+  cursor: grab;
+}
+.kanban-card:active {
+  cursor: grabbing;
+}
+
+/*
+ * The card you are dragging.
+ *
+ * Browsers fade the source to near-transparent by default, which leaves a hole
+ * in the list and makes it hard to tell what you picked up. Held at full
+ * opacity, lifted, and outlined in the accent colour instead - the card you are
+ * carrying should be the most legible thing on the board, not the least.
+ */
+.kanban-card-dragging {
+  opacity: 1;
+  outline: 2px solid var(--accent, #2f6fdb);
+  outline-offset: 1px;
+  box-shadow: 0 8px 20px rgba(47, 111, 219, 0.28);
+  transform: scale(1.02);
+  cursor: grabbing;
+}
+.kanban-card-title {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.kanban-card-meta {
+  display: block;
+  font-size: 12px;
+  color: var(--muted, #6b7280);
+  font-variant-numeric: tabular-nums;
+}
+.kanban-card-due {
+  display: block;
+  font-size: 12px;
+  color: var(--warn, #b45309);
+  margin-top: 2px;
+}
+.kanban-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.kanban-card-actions select {
+  font-size: 12px;
+  max-width: 110px;
+}
+.kanban-card-remove {
+  margin-left: auto;
+  color: var(--muted, #6b7280);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.saved-head-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.saved-track {
+  color: var(--accent, #2f6fdb);
+  font-size: 13px;
+}
+
+/* Saved-job comparison --------------------------------------------------- */
+.saved-compare {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--muted, #6b7280);
+  cursor: pointer;
+}
+.saved-compare-panel {
+  border: 1px solid var(--accent, #2f6fdb);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: var(--surface, #fff);
+}
+.saved-compare-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.saved-compare-head h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.saved-compare-scroll {
+  overflow-x: auto;
+}
+.saved-compare-table {
+  min-width: 360px;
+}
+/*
+ * Each column is a different job, so a rule between them keeps the eye in one
+ * column while reading down. The other tables compare rows, not columns, and
+ * would only be busier for it.
+ */
+.saved-compare-table :is(th, td) + :is(th, td) {
+  border-left: 1px solid var(--line, #eef1f5);
+}
+.saved-compare-table :is(th, td) {
+  vertical-align: top;
+}
+.saved-compare-table td.compare-best {
+  background: var(--accent-soft, #eef2ff);
+  font-weight: 700;
+}
+
+/* Board customisation: saved lane, rename/hide controls, hidden strip ----- */
+.kanban-col-saved {
+  background: var(--accent-soft, #eef2ff);
+  border-color: var(--accent, #2f6fdb);
+}
+.kanban-head {
+  gap: 4px;
+}
+.kanban-title {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kanban-lane-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0.4;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0 2px;
+  color: inherit;
+}
+.kanban-lane-btn:hover {
+  opacity: 1;
+}
+.kanban-rename {
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  padding: 2px 6px;
+  border: 1px solid var(--accent, #2f6fdb);
+  border-radius: 4px;
+  background: var(--surface, #fff);
+  color: inherit;
+}
+.kanban-hidden {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 12px;
+}
+.kanban-hidden-label {
+  font-size: 12px;
+  color: var(--muted, #6b7280);
+}
+.kanban-restore {
+  border: 1px dashed var(--border, #d1d5db);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.kanban-restore:hover {
+  border-color: var(--accent, #2f6fdb);
+}
+.kanban-reset {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted, #6b7280);
+}
+
+/* The board fills the modal it opens in, rather than the settings page's narrow
+   reading column. Lanes then use the real width and only scroll when they must. */
+.board-view {
+  max-width: none;
+  padding: 16px 20px 28px;
+}
+.board-view .funnel-tiles {
+  gap: 8px;
+}
+/* Keep the board's own horizontal scroll inside the modal, never the page. */
+.board-view .kanban {
+  max-width: 100%;
+}
+@media (max-width: 720px) {
+  .kanban-col {
+    flex-basis: 160px;
+  }
+}
+
+/* Application tracker: toolbar, coloured lanes, add form, list view --------- */
+.tracker-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.tracker-search {
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+.tracker-views {
+  display: inline-flex;
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.tracker-view {
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.tracker-view-on {
+  background: var(--accent, #2f6fdb);
+  color: #fff;
+}
+.tracker-stats-toggle {
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  color: inherit;
+}
+.tracker-stats-on {
+  background: var(--accent-soft, #eef2ff);
+  border-color: var(--accent, #2f6fdb);
+}
+.tracker-add {
+  margin-left: auto;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent, #2f6fdb);
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tracker-add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 14px;
+  border: 1px solid var(--accent, #2f6fdb);
+  border-radius: 8px;
+  background: var(--sunken, #f6f7f9);
+}
+.tracker-add-form .text-input { flex: 1 1 140px; }
+.tracker-add-pay { flex: 0 0 90px !important; }
+.tracker-stats { margin-bottom: 16px; }
+
+/* Coloured lane headers (mockup style): white text on the stage colour. */
+.kanban-head-color { color: #fff; border-radius: 8px 8px 0 0; margin: -8px -8px 8px; padding: 8px 10px; }
+.kanban-head-color .kanban-title { color: #fff; }
+.kanban-head-color .kanban-count { background: rgba(255, 255, 255, 0.28); color: #fff; }
+.kanban-head-color .kanban-lane-btn { color: #fff; opacity: 0.75; }
+.kanban-head-color .kanban-lane-btn:hover { opacity: 1; }
+.kanban-card { border-left: 3px solid #cbd5e1; }
+
+/* List view */
+/* A long list, so its rows breathe a little more than the compact read-outs. */
+.tracker-list :is(th, td) {
+  padding: 8px 12px;
+}
+.tracker-list-stage { font-size: 12px; }
+.tracker-list-saved { color: var(--accent, #2f6fdb); font-weight: 600; }
+
+.saved-track:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.field-warning {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fdf1f1;
+  border: 1px solid #f2c9c9;
+  color: #a3352a;
+  font-size: 13px;
+}
+
+.kanban-promote {
+  font-size: 12px;
+  max-width: 120px;
+}
+
+/* Settings page: the tab menu as a left sidebar, so a ninth tab no longer wraps
+   into its own awkward row. A CSS grid places header/footer full-width, the
+   tabs down the left, and the one visible panel on the right. Scoped away from
+   the board modal, which reuses .app with no tabs at all. */
+.app:not(.widget-view) {
+  max-width: 1040px;
+  display: grid;
+  grid-template-columns: 176px minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  column-gap: 32px;
+}
+.app:not(.widget-view) > .header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.app:not(.widget-view) > .tabs {
+  grid-column: 1;
+  grid-row: 2;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 2px;
+  margin-bottom: 0;
+  position: sticky;
+  top: 20px;
+  align-self: start;
+}
+.app:not(.widget-view) > .tabs .tab {
+  flex: 0 0 auto;
+  text-align: left;
+}
+.app:not(.widget-view) > .panel {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+}
+.app:not(.widget-view) > .footer {
+  grid-column: 1 / -1;
+  grid-row: 3;
+}
+
+/* Narrow windows: fall back to the stacked, top-menu layout. */
+@media (max-width: 720px) {
+  .app:not(.widget-view) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+  }
+  .app:not(.widget-view) > .tabs {
+    grid-column: 1;
+    grid-row: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: static;
+  }
+  .app:not(.widget-view) > .panel {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .app:not(.widget-view) > .footer {
+    grid-row: 4;
+  }
+}
+
+.tracker-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted, #6b7280);
+}
+.tracker-sort select {
+  font-size: 13px;
+}
+
+.resume-url-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.resume-url-row .text-input {
+  flex: 1 1 auto;
+}
+
+/* The board modal: fill its whole height and width. The board grows to the
+   bottom of the modal, and lanes share the width and stretch to that height -
+   real full-height swimlanes, no wasted space, and horizontal scroll only when
+   the window is genuinely too narrow for the min width. */
+.board-view {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+.board-view .tracker {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.board-view .kanban {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  gap: 10px;
+}
+.kanban-col {
+  flex: 1 1 0;
+  min-width: 270px;
+  min-height: 0;
+}
+.kanban-cards {
+  flex: 1 1 auto;
+}
+
+/* Native selects, dressed to match the rest of the UI rather than the browser
+   default: same border, radius and a drawn chevron. Covers Sort, the card
+   "Move to…" menus and the list-view stage menus. */
+.board-view select,
+.tracker select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #d5dce6;
+  border-radius: 7px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><path d='M1 3l4 4 4-4' stroke='%236b7280' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  padding: 6px 26px 6px 10px;
+  font: inherit;
+  font-size: 13px;
+  color: #2b3745;
+  cursor: pointer;
+}
+.board-view select:hover,
+.tracker select:hover {
+  border-color: #2f6fdb;
+}
+.board-view select:focus-visible,
+.tracker select:focus-visible {
+  outline: 2px solid #2f6fdb;
+  outline-offset: 1px;
+}
+.tracker-sort select,
+.kanban-promote,
+.tracker-list-stage {
+  max-width: none;
+}
+
+/* Board polish toward the mockup: lane icons, tag chips on cards, clean resting
+   cards (actions reveal on hover), and an add button in each lane. */
+.kanban-lane-icon {
+  flex: 0 0 auto;
+  margin-right: 1px;
+}
+.kanban-card {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  border-left-width: 4px;
+  padding: 10px 12px;
+}
+.kanban-card-employer {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+.kanban-card-rate {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f7b3f;
+  margin-top: 5px;
+}
+.kanban-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 7px;
+}
+.kanban-card-tag {
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #475569;
+}
+.kanban-card-tag-more {
+  background: transparent;
+  color: #94a3b8;
+}
+/* Resting card is clean like the mockup; the move menu and remove reveal on
+   hover or keyboard focus. Drag stays the primary way to move a card. */
+.kanban-card-actions {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.kanban-card:hover .kanban-card-actions,
+.kanban-card:focus-within .kanban-card-actions {
+  opacity: 1;
+}
+.kanban-add {
+  width: 100%;
+  margin-top: 2px;
+  padding: 8px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.kanban-add:hover {
+  border-color: #2f6fdb;
+  color: #2f6fdb;
+}
+.tracker-add-into {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  align-self: center;
+}
+
+/* Kebab menus on cards and lane headers; clickable lane title (no pencil). */
+.kanban-card { position: relative; }
+.kanban-card-title { padding-right: 20px; }
+.kanban-title-btn {
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kanban-title-btn:hover { text-decoration: underline; }
+.kanban-kebab-wrap { position: relative; flex: 0 0 auto; }
+/* Card kebab lives at the lower-right; its menu drops below the kebab. */
+.kanban-card-kebab { position: absolute; bottom: 4px; right: 4px; }
+.kanban-kebab {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: inherit;
+  opacity: 0.55;
+}
+.kanban-kebab:hover { opacity: 1; background: rgba(15, 23, 42, 0.06); }
+.kanban-head-color .kanban-kebab { color: #fff; opacity: 0.85; }
+.kanban-head-color .kanban-kebab:hover { background: rgba(255, 255, 255, 0.22); opacity: 1; }
+.kanban-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 20;
+  min-width: 184px;
+  margin-top: 4px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #e2e7ee;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 320px;
+  overflow: auto;
+}
+.kanban-menu-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  padding: 2px 6px 0;
+}
+.kanban-menu-select,
+.kanban-menu-tag { width: 100%; }
+.kanban-menu-item {
+  text-align: left;
+  border: 0;
+  background: none;
+  padding: 7px 8px;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 13px;
+  color: #2b3745;
+  cursor: pointer;
+}
+.kanban-menu-item:hover { background: #f2f5fa; }
+.kanban-menu-danger { color: #c0392b; }
+.kanban-menu-danger:hover { background: #fdf1f1; }
+
+/* The rename input sits in a white-text header; force readable dark text. */
+.kanban-rename {
+  color: #1c2733;
+  background: #fff;
+}
+
+/* A consistent card height so short (title-only) cards do not look cramped next
+   to ones with an employer, rate and tags. The left gutter holds the drag grip;
+   the lower-right corner is reserved for the kebab so tags never sit under it. */
+.kanban-card {
+  min-height: 74px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 18px;
+}
+.kanban-card-title { padding-right: 0; }
+.kanban-card-tags {
+  margin-top: auto;
+  padding-right: 26px;
+}
+.kanban-card-due { padding-right: 26px; }
+/* Drag affordance: a faint grip in the left gutter, brightening on hover. */
+.kanban-card-grip {
+  position: absolute;
+  /* Centred on the card rather than pinned to its top corner: the handle grabs
+     the whole card, and a mark floating beside the first line looked like it
+     belonged to the title. */
+  top: 50%;
+  transform: translateY(-50%);
+  left: 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: #cbd5e1;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  cursor: grab;
+  user-select: none;
+}
+.kanban-card:hover .kanban-card-grip,
+.kanban-card:focus-within .kanban-card-grip { opacity: 1; }
+.kanban-card:active .kanban-card-grip { cursor: grabbing; }
+
+/* ---- Board settings modal, colour swatches, tag manager, lane reorder ---- */
+
+/* The lane header is a drag handle for reordering; show it. */
+.kanban-head-color { cursor: grab; }
+.kanban-head-color:active { cursor: grabbing; }
+.kanban-col-dragging { opacity: 0.5; }
+
+/* Colour swatches in the card menu and the settings modal. */
+.kanban-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 2px 6px 4px;
+}
+.kanban-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.kanban-swatch-on { outline: 2px solid #111827; outline-offset: 1px; }
+.kanban-swatch-add {
+  position: relative;
+  background: #fff;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1;
+  overflow: hidden;
+}
+.kanban-swatch-add input[type='color'] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+}
+.kanban-swatch-clear {
+  background: #fff;
+  color: #c0392b;
+  font-size: 14px;
+  line-height: 1;
+}
+.kanban-swatch-manage { position: relative; display: inline-flex; }
+.kanban-swatch-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 0;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The settings dialog, centred over the board. */
+.kanban-settings-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  overflow: auto;
+}
+.kanban-settings {
+  width: min(560px, 100%);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3);
+  padding: 4px 20px 20px;
+}
+.kanban-settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eef2f7;
+  margin: 0 -20px 12px;
+  padding: 12px 20px;
+}
+.kanban-settings-head h3 { margin: 0; font-size: 16px; }
+.kanban-settings-close {
+  border: 0;
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0 4px;
+  border-radius: 6px;
+}
+.kanban-settings-close:hover { background: #f1f5f9; color: #111827; }
+.kanban-settings-sec { padding: 10px 0; border-top: 1px solid #f4f6fa; }
+.kanban-settings-sec:first-of-type { border-top: 0; }
+.kanban-settings-sec h4 { margin: 0 0 8px; font-size: 13px; color: #334155; }
+.kanban-settings-row { display: flex; gap: 8px; }
+.kanban-settings-row .text-input { flex: 1 1 auto; }
+
+/* The tag manager list. */
+.kanban-tag-admin { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow: auto; }
+.kanban-tag-row { display: flex; align-items: center; gap: 8px; }
+.kanban-tag-name { flex: 1 1 auto; }
+.kanban-tag-count {
+  flex: 0 0 auto;
+  min-width: 26px;
+  text-align: center;
+  font-size: 12px;
+  color: #475569;
+  background: #eef2f7;
+  border-radius: 999px;
+  padding: 2px 6px;
+}
+.kanban-tag-del {
+  flex: 0 0 auto;
+  border: 1px solid #f0d4d4;
+  background: #fff;
+  color: #c0392b;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 12px;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+.kanban-tag-del:hover { background: #fdf1f1; }
+
+/* ---- Coloured tags, the card menu tag picker, and the card editor ---- */
+
+/* Card chips take their colour from inline style; give them an edge to colour. */
+.kanban-card-tag { border: 1px solid transparent; }
+
+/* Tag picker inside the card kebab menu. */
+.kanban-menu-tags { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 6px; }
+.kanban-menu-tagchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 0 4px 0 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+.kanban-menu-tagchip-x {
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0 1px;
+  opacity: 0.7;
+}
+.kanban-menu-tagchip-x:hover { opacity: 1; }
+.kanban-menu-tagsuggest { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 6px 2px; }
+.kanban-menu-tagadd {
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.kanban-menu-tagadd:hover { filter: brightness(0.97); }
+
+/* The colour swatch on each tag-manager row. */
+.kanban-tag-swatch {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.kanban-tag-swatch input[type='color'] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* The in-place card editor (reuses the settings-modal shell). */
+/*
+ * Capped to the viewport rather than growing past it: the shell is a column,
+ * the field stack scrolls, and the Save row stays pinned below it - so however
+ * long the prep template gets, Save never leaves the screen. The 80px matches
+ * the backdrop's 40px of padding top and bottom.
+ */
+.kanban-card-editor {
+  width: min(460px, 100%);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 80px);
+  padding-bottom: 0;
+}
+.kanban-edit-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  /* Counter the shell's side padding so the scrollbar hugs the modal edge. */
+  margin: 0 -20px;
+  padding: 0 20px;
+}
+.kanban-card-editor .kanban-edit-actions {
+  flex: 0 0 auto;
+  margin: 0 -20px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid #eef2f7;
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+}
+.kanban-edit-field { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; }
+.kanban-edit-field > span { font-size: 12px; font-weight: 600; color: #475569; }
+.kanban-edit-field textarea.text-input { resize: vertical; min-height: 56px; }
+.kanban-edit-actions { display: flex; gap: 8px; margin-top: 14px; }
+
+/* Default-tag suggestions on each Saved-tab card, matching the board picker. */
+.saved-tag-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.saved-tag-pick { opacity: 0.9; }
+.saved-tag-pick:hover { opacity: 1; filter: brightness(0.97); }
+
+/* Card date (savedAt / updatedAt) and the stage-history timeline in the editor. */
+.kanban-card-date {
+  margin-top: auto;
+  padding-right: 26px;
+  font-size: 10.5px;
+  color: #94a3b8;
+}
+.kanban-card-tags + .kanban-card-date,
+.kanban-card-due + .kanban-card-date { margin-top: 4px; }
+.kanban-history {
+  list-style: none;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 160px;
+  overflow: auto;
+}
+.kanban-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12.5px;
+}
+.kanban-history-stage { font-weight: 600; color: #334155; }
+.kanban-history-date { color: #94a3b8; font-variant-numeric: tabular-nums; }
+
+/* A kebab menu that would fall off the bottom opens upward instead. */
+.kanban-menu.kanban-menu-up {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+/* Wider card menu so tag suggestions wrap into fewer rows (less scrolling). */
+.kanban-card-kebab .kanban-menu { min-width: 244px; }
+
+/* ---- Tracker toolbar: a single row of equal-height controls ---- */
+.tracker-toolbar { flex-wrap: nowrap; }
+.tracker-search,
+.tracker-views,
+.tracker-stats-toggle,
+.tracker-settings-btn,
+.tracker-add,
+.tracker-sort select {
+  height: 34px;
+  box-sizing: border-box;
+}
+.tracker-stats-toggle,
+.tracker-settings-btn,
+.tracker-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.tracker-view { display: inline-flex; align-items: center; white-space: nowrap; }
+.tracker-sort select { padding-top: 0; padding-bottom: 0; }
+.tracker-sort { flex: 0 0 auto; }
+.tracker-search { flex: 1 1 160px; min-width: 110px; }
+
+/* Settings "Add a column" row: input + button, one line, matched height. */
+.kanban-settings-row { align-items: center; }
+.kanban-settings-row .text-input { height: 36px; box-sizing: border-box; }
+.kanban-settings-row .tracker-add {
+  flex: 0 0 auto;
+  height: 36px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-left: 0;
+}
+
+/* The Export button matches the other toolbar controls. */
+.tracker-export-btn {
+  height: 34px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.tracker-export-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Note checklist rendered from "- [ ] task" lines in a job's description. */
+.note-checklist {
+  margin-top: 2px;
+  padding: 8px 10px;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+.note-checklist-head { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
+.note-checklist ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.note-checklist li label { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.note-checklist-done { text-decoration: line-through; color: #94a3b8; }
+
+/* Next-action badge on a card, and the editor's date row. */
+.kanban-card-next {
+  padding-right: 26px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #2f6fdb;
+}
+.kanban-card-next-overdue { color: #dc2626; }
+.kanban-edit-next { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.kanban-edit-next .text-input { flex: 1 1 140px; }
+.kanban-edit-next .reset { flex: 0 0 auto; white-space: nowrap; }
+
+/* Text snippets tab. */
+.snippet-new { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.snippet-new .tracker-add { align-self: flex-start; }
+.snippet-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.snippet { border: 1px solid var(--line, #e2e7ee); border-radius: 10px; padding: 12px; background: #fbfcfe; }
+.snippet-head { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.snippet-title { flex: 1 1 auto; font-weight: 600; }
+.snippet-copy { flex: 0 0 auto; white-space: nowrap; }
+.snippet-body { resize: vertical; font: inherit; }
+
+/* Reset-to-defaults confirmation + danger styling. */
+.footer-confirm { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.footer-confirm-q { font-size: 13px; color: var(--muted); }
+.reset-danger { border-color: #d98383; color: #b0473a; }
+.reset-danger:hover { background: #fdf1f1; border-color: #b0473a; color: #b0473a; }
+
+
+/* ---------------------------------------------------------------------------
+ * The mini apps.
+ *
+ * Each of these renders alone inside the dock's modal, so they own their whole
+ * frame rather than sitting in a settings panel. `widget-view` is the shared
+ * shell: fill the frame, scroll inside, and keep a comfortable gutter.
+ * ------------------------------------------------------------------------ */
+
+.widget-view {
+  height: 100vh;
+  overflow: auto;
+  padding: 18px;
+  background: var(--bg);
+  /*
+   * `.app` is a centred 780px column, which is right for the settings tab and
+   * wrong here: the mini app IS the window. Left as-is, the frame keeps the
+   * column and the scrollbar rides its edge instead of the window's, leaving a
+   * dead gutter to the right of it. The gutter people expect is the padding.
+   */
+  max-width: none;
+  margin: 0;
+}
+/*
+ * The board gets the same gutter as everything else.
+ *
+ * It was pinned to 0 here on the theory that "full bleed" meant the content
+ * too. It does not: the modal fills the window, but content running into the
+ * window edge while the title bar above it is inset by 18px reads as a layout
+ * fault. The lanes keep their own internal scroll either way.
+ */
+.widget-view.board-view { padding: 18px 18px 0; }
+
+/* World clocks -------------------------------------------------------------*/
+
+.clocks-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.clocks-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+
+.clock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.clock-card {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+/* Night gets an ink-blue card: the fact you most need at a glance is whether
+   it is a reasonable hour to message them. */
+.clock-card.is-night {
+  background: #1e293b;
+  border-color: #29374b;
+  color: #e2e8f0;
+}
+.clock-card.is-night .clock-offset,
+.clock-card.is-night .clock-day,
+.clock-card.is-night .clock-overlap { color: #94a3b8; }
+
+.clock-top { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+.clock-label { font-weight: 650; font-size: 13px; }
+.clock-offset { font-size: 11px; color: var(--muted); }
+.clock-time { margin: 6px 0 2px; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+.clock-day { margin: 0; font-size: 12px; color: var(--muted); }
+.clock-delta { font-weight: 600; }
+.clock-overlap { margin: 8px 0 0; font-size: 11.5px; color: var(--muted); }
+
+.clock-actions { display: flex; gap: 4px; margin-top: 10px; }
+.clock-move,
+.clock-remove {
+  height: var(--control-h-xs);
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: var(--control-font-xs);
+  cursor: pointer;
+}
+.clock-move:disabled { opacity: 0.35; cursor: default; }
+.clock-remove { margin-left: auto; }
+.clock-remove:hover { border-color: #d98383; color: #b0473a; }
+
+.clocks-add { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+.clocks-add .text-input { max-width: 220px; }
+
+/* Pomodoro -----------------------------------------------------------------*/
+
+.pomodoro { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pomo-dial { position: relative; width: 200px; height: 200px; }
+.pomo-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.pomo-track { fill: none; stroke: var(--line); stroke-width: 8; }
+.pomo-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 240ms linear;
+}
+/* Breaks go green, so the phase is readable without reading the word. */
+.phase-short .pomo-fill,
+.phase-long .pomo-fill { stroke: #2f9e6f; }
+
+.pomo-readout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.pomo-phase { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+.pomo-time { font-size: 38px; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.pomo-cycle { font-size: 11px; color: var(--muted); }
+
+.pomo-task { width: 100%; }
+.pomo-controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pomo-today { margin: 0; font-size: 12.5px; color: var(--muted); }
+.pomo-paused { color: #b0473a; }
+
+.pomo-week {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  width: 100%;
+  height: 60px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pomo-week li {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 3px;
+}
+.pomo-bar {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+  opacity: 0.75;
+}
+.pomo-bar-day { font-size: 10px; color: var(--muted); }
+
+.pomo-settings-toggle {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.pomo-settings { width: 100%; border-top: 1px solid var(--line); padding-top: 10px; }
+
+/* Time tracker -------------------------------------------------------------*/
+
+.tracker-time { display: flex; flex-direction: column; gap: 12px; }
+
+.time-now {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+/* A running clock earns a coloured edge: it is the one thing on this panel you
+   must not forget is happening. */
+.time-now.is-running { border-left: 3px solid var(--accent); }
+
+.time-now-head { display: flex; align-items: baseline; gap: 10px; }
+.time-elapsed { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.time-since { font-size: 12px; color: var(--muted); }
+.time-row { display: flex; gap: 8px; align-items: center; }
+.time-row .text-input { flex: 1 1 auto; min-width: 0; }
+.time-rate { flex: 0 0 84px; }
+.time-actions { display: flex; align-items: center; gap: 8px; }
+.time-earned { font-size: 12.5px; color: var(--muted); margin-left: auto; }
+
+.time-totals {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.time-totals strong { color: var(--ink); font-size: 14px; }
+.time-totals .btn { margin-left: auto; }
+
+.time-clients { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.time-clients li {
+  display: flex;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--card);
+  font-size: 12.5px;
+}
+.time-client-name { flex: 1 1 auto; font-weight: 600; }
+.time-client-hours { font-variant-numeric: tabular-nums; }
+.time-client-earned { color: #2f9e6f; font-variant-numeric: tabular-nums; }
+
+.time-log { display: flex; flex-direction: column; gap: 12px; }
+.time-log ul { margin: 0; padding: 0; list-style: none; }
+.time-day {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+.time-day-total { font-variant-numeric: tabular-nums; }
+
+.time-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.time-entry-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.time-entry-client {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--bg);
+  font-size: 11px;
+  color: var(--muted);
+}
+.time-entry-span { flex: 0 0 auto; font-size: 11.5px; color: var(--muted); }
+.time-entry-dur { flex: 0 0 auto; font-variant-numeric: tabular-nums; font-weight: 600; }
+.time-entry-remove {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+}
+.time-entry:hover .time-entry-remove { opacity: 1; }
+.time-entry-remove:hover { background: #fdf1f1; color: #b0473a; }
+
+/* Dock settings ------------------------------------------------------------*/
+
+.dock-list { margin: 6px 0 14px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.dock-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+/* An undocked row is greyed but still legible - it is a catalogue, not a
+   disabled control. */
+.dock-row.is-off { background: transparent; color: var(--muted); }
+.dock-row-icon { flex: 0 0 auto; display: inline-flex; color: var(--accent); }
+.dock-row.is-off .dock-row-icon { color: var(--muted); }
+.dock-row-text { flex: 1 1 auto; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.dock-row-text strong { font-size: 13px; font-weight: 650; }
+.dock-row-text .field-hint { margin: 0; font-size: 11.5px; }
+.dock-row-tier {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fdf5e3;
+  color: #8a6d1f;
+  font-size: 11px;
+  font-weight: 600;
+}
+.dock-move,
+.dock-toggle {
+  flex: 0 0 auto;
+  height: var(--control-h-xs);
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: var(--control-font-xs);
+  cursor: pointer;
+}
+.dock-move { width: 26px; padding: 0; }
+.dock-move:disabled { opacity: 0.35; cursor: default; }
+.dock-move:not(:disabled):hover,
+.dock-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Bulk selection on the board -----------------------------------------------
+ *
+ * Fourteen cards in a lane is where dragging one at a time stops being a
+ * gesture and starts being a chore. A rejection round is exactly that shape:
+ * several cards that all became the same thing on the same day.
+ */
+
+.kanban-bulk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  /* Tinted rather than solid: it appears above a board you are still reading,
+     and a solid bar reads as a modal that has taken over. */
+  background: color-mix(in srgb, var(--accent) 8%, var(--card));
+  font-size: 13px;
+}
+.kanban-bulk-count { flex: 0 0 auto; }
+.kanban-bulk-move { display: inline-flex; align-items: center; gap: 6px; }
+.kanban-bulk-move .text-input { width: auto; }
+.kanban-bulk-btn {
+  height: var(--control-h-sm);
+  padding: 0 var(--control-pad-x-sm);
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: var(--card);
+  color: inherit;
+  font-size: var(--control-font-sm);
+  cursor: pointer;
+}
+.kanban-bulk-btn:hover { border-color: var(--accent); color: var(--accent); }
+.kanban-bulk-remove:hover { border-color: #b0473a; color: #b0473a; background: #fdf1f1; }
+/* Push Clear to the end, away from Remove, so the destructive one is not the
+   button your hand is already near. */
+.kanban-bulk-btn:last-child { margin-left: auto; }
+
+/*
+ * Hard into the top-right corner.
+ *
+ * It used to sit 26px in, dodging a kebab menu that is not there - that button
+ * is pinned to the BOTTOM right of the card. So the inset bought nothing and
+ * left the box floating in the middle of the title's line, reading as part of
+ * the title rather than as a control on the card.
+ */
+.kanban-card-pick {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+/* Keep the title clear of it, or a long one runs under the box. */
+.kanban-card .kanban-card-title { padding-right: 18px; }
+/* Shown on hover, while anything is selected, and whenever this card is one of
+   them - so a ticked box never disappears when the pointer leaves. */
+.kanban-card:hover .kanban-card-pick,
+.kanban.is-selecting .kanban-card-pick,
+.kanban-card-pick:focus-visible,
+.kanban-card-selected .kanban-card-pick { opacity: 1; }
+
+.kanban-card-selected {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+/* Interview prep -----------------------------------------------------------
+ *
+ * Taller than the description box on purpose: this is a page of notes you read
+ * back before a call, not a one-line reminder.
+ */
+.kanban-prep {
+  min-height: 130px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}

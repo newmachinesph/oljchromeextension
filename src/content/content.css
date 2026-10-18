@@ -1,0 +1,3265 @@
+/*
+ * Styles for injected UI only.
+ *
+ * Every selector is namespaced under ojrf- and scoped to our own nodes, so
+ * nothing here can leak into onlinejobs.ph's layout. The one exception is
+ * .ojrf-hidden, which we add to a site node and remove again on restore.
+ */
+
+#ojrf-bar {
+  /* Explicit rows rather than one wrapping row, so the shape is never ragged. */
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 12px 0 14px;
+  padding: 11px 16px;
+  border: 1px solid #dde3ec;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fbfcfe 0%, #f5f8fd 100%);
+  box-shadow: 0 1px 2px rgba(20, 35, 60, 0.05);
+  color: #1c2733;
+  font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#ojrf-bar .ojrf-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+#ojrf-bar .ojrf-row-pills,
+#ojrf-bar .ojrf-row-search,
+#ojrf-bar .ojrf-row-skills {
+  padding-top: 7px;
+  border-top: 1px solid #e7ecf3;
+}
+
+/* Fixed-width labels line the rows up into a readable left column. */
+.ojrf-ui .ojrf-row-label {
+  flex: 0 0 52px;
+}
+
+#ojrf-bar .ojrf-row-skills {
+  align-items: flex-start;
+}
+
+/* Skill cloud: commonest first, with a tally, click to narrow. */
+.ojrf-ui .ojrf-cloud {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 5px;
+  /* Exactly two rows of chips, so nothing is clipped mid-row. The scrollbar
+     already signals there is more. */
+  max-height: 57px;
+  overflow-y: auto;
+}
+
+.ojrf-ui .ojrf-cloud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border: 1px solid #e3e7ee;
+  border-radius: 999px;
+  background: #fff;
+  color: #5c6675;
+  font: 600 11.5px/1.6 inherit;
+  cursor: pointer;
+}
+
+.ojrf-ui .ojrf-cloud-chip:hover {
+  border-color: #b9cdec;
+  background: #f4f8fe;
+  color: #2f6fdb;
+}
+
+.ojrf-ui .ojrf-cloud-chip-on {
+  border-color: #2f6fdb;
+  background: #2f6fdb;
+  color: #fff;
+}
+
+.ojrf-ui .ojrf-cloud-count {
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #eef1f6;
+  color: #7c8695;
+  font-size: 10.5px;
+}
+
+.ojrf-ui .ojrf-cloud-chip-on .ojrf-cloud-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* Opens the tail below the first 28 chips. Deliberately not chip-shaped: it
+   selects nothing, and looking selectable would invite a filtering click. */
+.ojrf-ui .ojrf-cloud-more {
+  align-self: flex-start;
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  color: #2f6fdb;
+  font: 600 11.5px/1.6 inherit;
+  cursor: pointer;
+}
+
+.ojrf-ui .ojrf-cloud-more:hover {
+  text-decoration: underline;
+}
+
+/* Search terms, entered comma-separated and shown as removable tags. */
+.ojrf-ui .ojrf-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ojrf-ui .ojrf-term {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px 3px 11px;
+  border-radius: 999px;
+  background: #2f6fdb;
+  color: #fff;
+  font: 600 12px/1.5 inherit;
+}
+
+.ojrf-ui .ojrf-term-remove {
+  padding: 0 3px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font: 700 12px/1.3 inherit;
+  cursor: pointer;
+}
+
+.ojrf-ui .ojrf-term-remove:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.ojrf-ui .ojrf-term-input {
+  flex: 1 1 200px;
+  min-width: 140px;
+  padding: 4px 10px;
+  border: 1px solid #ccd6e4;
+  border-radius: 7px;
+  background: #fff;
+  color: inherit;
+  font: 13px/1.4 inherit;
+}
+
+.ojrf-ui .ojrf-term-input:focus {
+  border-color: #2f6fdb;
+  box-shadow: 0 0 0 3px rgba(47, 111, 219, 0.14);
+  outline: none;
+}
+
+/*
+ * Saving a search, from the search row.
+ *
+ * Quiet by default - it is the least-used control on a row people use
+ * constantly, so it reads as a link until hovered rather than competing with
+ * the field beside it.
+ */
+.ojrf-ui .ojrf-save-search {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: none;
+  color: #5c6675;
+  font: 13px/1.4 inherit;
+  cursor: pointer;
+}
+.ojrf-ui .ojrf-save-search:hover {
+  border-color: #ccd6e4;
+  background: #fff;
+  color: #2f6fdb;
+}
+
+.ojrf-ui .ojrf-save-box {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+}
+.ojrf-ui .ojrf-save-name {
+  width: 150px;
+  padding: 4px 10px;
+  border: 1px solid #2f6fdb;
+  border-radius: 7px;
+  background: #fff;
+  color: inherit;
+  font: 13px/1.4 inherit;
+}
+.ojrf-ui .ojrf-save-name:focus {
+  box-shadow: 0 0 0 3px rgba(47, 111, 219, 0.14);
+  outline: none;
+}
+.ojrf-ui .ojrf-save-confirm,
+.ojrf-ui .ojrf-save-cancel {
+  padding: 4px 10px;
+  border: 1px solid #ccd6e4;
+  border-radius: 7px;
+  background: #fff;
+  color: inherit;
+  font: 13px/1.4 inherit;
+  cursor: pointer;
+}
+.ojrf-ui .ojrf-save-confirm {
+  border-color: #2f6fdb;
+  background: #2f6fdb;
+  color: #fff;
+}
+.ojrf-ui .ojrf-save-cancel {
+  padding: 4px 8px;
+  color: #5c6675;
+}
+
+.ojrf-ui .ojrf-row-label {
+  color: #97a3b2;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/*
+ * Threshold, styled as one unit so "$ 2000 /mo" reads as a single field.
+ *
+ * One explicit height, shared by every field in the row. A native <select> is
+ * taller than a text input at the same font size, so left to themselves the two
+ * boxes sit at different heights and the row looks crooked.
+ */
+#ojrf-bar .ojrf-field {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 30px;
+  gap: 6px;
+  /* Bootstrap gives every <label> a 0.5rem bottom margin, which pushed the
+     sort field 4px above the threshold field beside it. */
+  margin: 0;
+  padding: 0 9px;
+  border: 1px solid #ccd6e4;
+  border-radius: 7px;
+  background: #fff;
+}
+
+/*
+ * With no search terms committed, the pill container is still a flex item and
+ * still earns a gap - which pushed the search box 14px right of the field above
+ * it. Collapsed entirely, the two rows start at the same x.
+ */
+#ojrf-bar .ojrf-terms:empty {
+  display: none;
+}
+
+#ojrf-bar .ojrf-field:focus-within {
+  border-color: #2f6fdb;
+  box-shadow: 0 0 0 3px rgba(47, 111, 219, 0.14);
+}
+
+#ojrf-bar .ojrf-affix {
+  color: #8a94a1;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#ojrf-bar .ojrf-amount {
+  box-sizing: border-box;
+  width: 62px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: 600 14px/28px inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+#ojrf-bar .ojrf-amount:focus {
+  outline: none;
+}
+
+/* Sort mode, sharing the threshold field's frame so the two read as one group. */
+#ojrf-bar .ojrf-sort {
+  cursor: pointer;
+}
+
+/*
+ * The native chevron carries its own padding and its own idea of how tall a
+ * control should be, neither of which matches the input beside it. Suppressed,
+ * and drawn as a background instead, so both boxes are the same shape.
+ */
+#ojrf-bar .ojrf-sort-select {
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 17px 0 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='%238a94a1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.4 5 4.8 9 1.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 10px 6px;
+  color: inherit;
+  font: 600 14px/28px inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+#ojrf-bar .ojrf-sort-select:focus {
+  outline: none;
+}
+
+/* Job-type pills, echoing the site's own chips. */
+.ojrf-ui .ojrf-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ojrf-ui .ojrf-pill {
+  padding: 3px 11px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: #e4edfb;
+  color: #1f4f9c;
+  font: 600 12px/1.5 inherit;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.ojrf-ui .ojrf-pill:hover {
+  background: #d5e4fa;
+}
+
+/* Struck through and drained of colour: this type is being hidden. */
+.ojrf-ui .ojrf-pill-off {
+  border-color: #dbe1e9;
+  background: transparent;
+  color: #a3adba;
+  text-decoration: line-through;
+}
+
+.ojrf-ui .ojrf-pill-off:hover {
+  background: #f0f3f7;
+  color: #6b7684;
+}
+
+/* One of several, none hidden: the chosen one is filled, the rest outlined. */
+.ojrf-ui .ojrf-pill-choice {
+  border-color: #dbe1e9;
+  background: transparent;
+  color: #51606f;
+}
+
+.ojrf-ui .ojrf-pill-choice:hover {
+  background: #f0f3f7;
+}
+
+.ojrf-ui .ojrf-pill-choice-on,
+.ojrf-ui .ojrf-pill-choice-on:hover {
+  border-color: transparent;
+  background: #e4edfb;
+  color: #1f4f9c;
+}
+
+#ojrf-bar.ojrf-floating {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 2147483000;
+  max-width: 420px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+#ojrf-bar.ojrf-off {
+  background: #f4f5f7;
+  color: #6b7684;
+}
+
+#ojrf-bar.ojrf-off .ojrf-row-pills {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/*
+ * The headline count only. Short and stable - "141 of 180 hidden" - so the
+ * controls to its left never move as the numbers change.
+ */
+#ojrf-bar .ojrf-stats {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Centre, not baseline. Baseline is right for two runs of text, but this row
+     also carries a control the height of the icon buttons beside it, and
+     baseline hangs a box low against the number it sits next to. */
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/*
+ * The variable-length half.
+ *
+ * It runs from empty to a full sentence, and inline in the controls it dragged
+ * the sort field and the cog around every time a filter changed. Styled by
+ * class rather than by place, because it is docked beside the site's result
+ * count once the page is up and has to look the same in both homes.
+ */
+.ojrf-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-top: -2px;
+  color: #7c8695;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/*
+ * The auto-refresh tick, riding on the summary line.
+ *
+ * Quiet by default and only tinted once it is doing something: this line is
+ * read for its numbers, and a control that shouted would compete with them
+ * every time you glanced at it. Pushed to the far end so it never sits between
+ * two facts that belong together.
+ */
+/*
+ * Specific enough to win.
+ *
+ * The bar's own rules are all `#ojrf-bar ...`, so a bare `.ojrf-auto` loses the
+ * cascade to them. The one that mattered: this control is a <label>, and the
+ * bar gives its labels a bottom margin for the stacked rows. Here that margin
+ * made the flex line 38px tall and then centred a 30px box inside 38px of
+ * space it had itself created - so it sat 4px high, next to icon buttons of
+ * exactly its own height. Zeroing the margin is the whole fix; the centring
+ * was never wrong.
+ */
+#ojrf-bar .ojrf-auto {
+  align-self: center;
+  margin-bottom: 0;
+}
+
+.ojrf-auto {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  align-self: center;
+  /* Matched to the icon buttons it sits beside - they are 30px, and a control
+     four pixels short of its neighbours reads as misaligned even when it is
+     centred correctly. Padding is vertical-free because the height is fixed. */
+  height: 30px;
+  margin-left: 14px;
+  padding: 0 9px 0 6px;
+  /* Transparent rather than absent: the border is always in the box model, so
+     tinting it on hover cannot shift anything beside it by a pixel. */
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-sizing: border-box;
+  color: #7c8695;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+
+.ojrf-auto:hover {
+  border-color: #dbe2ec;
+  background: #f7f9fc;
+}
+
+.ojrf-auto.is-on {
+  border-color: #cfe0fa;
+  background: #eef4fe;
+  color: #2f6fdb;
+}
+
+.ojrf-auto input[type='checkbox'] {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: #2f6fdb;
+  cursor: pointer;
+}
+
+.ojrf-auto-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ojrf-auto-every {
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  font: 600 12px/1.4 inherit;
+  cursor: pointer;
+}
+
+/* Off, the interval is context rather than a control - it should not invite a
+   click that would do nothing. */
+.ojrf-auto-every:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.ojrf-auto.is-on .ojrf-auto-every {
+  background: #ffffff;
+}
+
+/*
+ * Docked: "Showing 158 of 180 loaded · 298 on the site  +150 merged · 22 low
+ * rate". Two inline-blocks rather than a flex row, since the count line is the
+ * site's own paragraph and wrapping it in a container of ours would be a change
+ * we then had to unwind.
+ */
+.ojrf-count-line {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.ojrf-count-line + .ojrf-summary {
+  display: inline-flex;
+  margin-top: 0;
+  margin-left: 12px;
+  vertical-align: baseline;
+}
+
+/*
+ * The container, once it holds only those two.
+ *
+ * An inline box cannot be broken across lines, so a long breakdown moved to its
+ * own line whole and read as unrelated. As flex items the count keeps its
+ * width and the summary takes the rest, wrapping its own chips when it must.
+ */
+.ojrf-count-host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+
+/*
+ * The site leaves nothing between this line and the first listing - measured
+ * at 0px, so the card began exactly where the count ended. Named twice so it
+ * wins on specificity rather than on which stylesheet happens to load last.
+ */
+.ojrf-count-host.ojrf-count-host {
+  margin-bottom: 22px;
+}
+
+.ojrf-count-host > .ojrf-count-line {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+}
+
+.ojrf-count-host > .ojrf-summary {
+  /* One line, and no ellipsis: the breakdown is capped to its three biggest
+     reasons with an explicit "+N more" instead, so nothing looks cut off. The
+     complete list is on hover. */
+  flex: 0 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap;
+  margin-top: 0;
+  margin-left: 0;
+}
+
+.ojrf-count-host > .ojrf-summary > .ojrf-detail {
+  white-space: nowrap;
+}
+
+/* Beats both of the above, whichever home it is in. */
+.ojrf-summary[hidden] {
+  display: none;
+}
+
+#ojrf-bar .ojrf-count {
+  color: #22303f;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ojrf-status {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e4edfb;
+  color: #1f4f9c;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ojrf-status-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ojrf-spinner {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border: 2px solid rgba(31, 79, 156, 0.25);
+  border-top-color: #1f4f9c;
+  border-radius: 50%;
+  animation: ojrf-spin 700ms linear infinite;
+}
+
+@keyframes ojrf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Placeholder cards, shown while results are being fetched. */
+.ojrf-skeleton {
+  display: flex;
+  gap: 16px;
+  margin: 12px 0;
+  padding: 20px;
+  border: 1px solid #edf0f4;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.ojrf-skeleton .ojrf-sk-avatar {
+  flex: 0 0 auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+}
+
+.ojrf-skeleton .ojrf-sk-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ojrf-skeleton .ojrf-sk-line {
+  height: 11px;
+  border-radius: 4px;
+}
+
+.ojrf-skeleton .ojrf-sk-title {
+  width: 46%;
+  height: 15px;
+}
+
+.ojrf-skeleton .ojrf-sk-short {
+  width: 62%;
+}
+
+.ojrf-skeleton .ojrf-sk-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.ojrf-skeleton .ojrf-sk-chips span {
+  width: 74px;
+  height: 18px;
+  border-radius: 999px;
+}
+
+/* One shared shimmer across every grey block. */
+.ojrf-skeleton .ojrf-sk-avatar,
+.ojrf-skeleton .ojrf-sk-line,
+.ojrf-skeleton .ojrf-sk-chips span {
+  background: linear-gradient(90deg, #eef1f5 25%, #f7f9fb 50%, #eef1f5 75%);
+  background-size: 400% 100%;
+  animation: ojrf-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes ojrf-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ojrf-skeleton .ojrf-sk-avatar,
+  .ojrf-skeleton .ojrf-sk-line,
+  .ojrf-skeleton .ojrf-sk-chips span,
+  .ojrf-spinner {
+    animation: none;
+  }
+}
+
+/* Away from the controls it has room to wrap, so nothing needs truncating. */
+.ojrf-detail {
+  color: inherit;
+  font-size: inherit;
+}
+
+#ojrf-bar .ojrf-warning {
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: #fff4e0;
+  color: #8a5300;
+  font-size: 13px;
+}
+
+/* Cog, pushed to the far right of the pills row. */
+#ojrf-bar .ojrf-settings {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid #ccd6e4;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7684;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease, transform 200ms ease;
+}
+
+#ojrf-bar .ojrf-settings:hover {
+  border-color: #2f6fdb;
+  color: #2f6fdb;
+  transform: rotate(45deg);
+}
+
+/*
+ * A part of the card the site rendered that we are hiding (rate line, excerpt).
+ *
+ * The class is doubled on purpose. Bootstrap's .d-sm-block is also !important,
+ * so at equal specificity whichever stylesheet comes last wins - and theirs did,
+ * leaving the excerpt visible. Two classes outrank one regardless of order.
+ */
+.ojrf-part-hidden.ojrf-part-hidden {
+  display: none !important;
+}
+
+/*
+ * Full-width layout, switched on by a class on <html>.
+ *
+ * Scoped to the job-search section so the site's header and footer keep their
+ * own container width - only the results area is widened. Removing the class
+ * restores everything, since none of this touches the site's stylesheet.
+ */
+html.ojrf-wide .jobseeker-search > .container,
+html.ojrf-wide .jobseeker-search .container.width-xl {
+  max-width: none !important;
+  width: auto !important;
+}
+
+/* The section's 48px top padding was sized for a search bar we now hide. */
+html.ojrf-wide .jobseeker-search {
+  padding-top: 18px !important;
+}
+
+/*
+ * The sidebar column.
+ *
+ * Widening the section drops the container's own gutter, which leaves the panel
+ * butted against the top and left edges of the window. The column carries the
+ * gutter instead - and is widened by exactly that amount, so the panel itself
+ * still measures the width set in settings rather than losing it to padding.
+ */
+html.ojrf-wide .jobseeker-search .col-md-3 {
+  --ojrf-sidebar-gutter: 28px;
+  flex: 0 0 calc(var(--ojrf-sidebar-width, 330px) + var(--ojrf-sidebar-gutter)) !important;
+  width: calc(var(--ojrf-sidebar-width, 330px) + var(--ojrf-sidebar-gutter)) !important;
+  max-width: calc(var(--ojrf-sidebar-width, 330px) + var(--ojrf-sidebar-gutter)) !important;
+  padding-top: 14px !important;
+  padding-left: var(--ojrf-sidebar-gutter) !important;
+}
+
+/*
+ * Both columns start at the same y.
+ *
+ * The site gives the results area a 24px top padding sized for a search bar we
+ * hide, so the control bar sat 22px below the sidebar panel. Moving the gutter
+ * onto the column and zeroing the section's own puts the two tops level.
+ */
+html.ojrf-wide .jobseeker-search .col-md-9 {
+  flex: 1 1 0% !important;
+  width: auto !important;
+  max-width: none !important;
+  padding-top: 14px !important;
+}
+
+html.ojrf-wide .jobseeker-search .results {
+  padding-top: 0 !important;
+}
+
+/* The column now supplies the gutter, so the bar's own top margin would double
+   it - and leave the bar sitting below the sidebar panel rather than beside it. */
+html.ojrf-wide #ojrf-bar {
+  margin-top: 0;
+}
+
+/*
+ * The sidebar follows you down the page.
+ *
+ * The results run to tens of thousands of pixels once pages are merged, so a
+ * static sidebar means scrolling back to the top to change a filter. Bounded by
+ * the viewport and allowed to scroll itself, so a long skill list is reachable
+ * rather than clipped.
+ */
+html.ojrf-wide #ojrf-sidebar {
+  position: sticky;
+  top: 14px;
+  max-height: calc(100vh - 28px);
+  overflow-y: auto;
+}
+
+/*
+ * Our sidebar panel, in the slot the site's skill filter occupied.
+ *
+ * The rows here are the very same elements the control bar built, moved across,
+ * so they need re-laying-out for a narrow column: label above, chips below.
+ */
+#ojrf-sidebar {
+  margin: 0 0 16px;
+  padding: 14px 14px 16px;
+  border: 1px solid #dde3ec;
+  border-radius: 10px;
+  background: #fbfcfe;
+  font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#ojrf-sidebar .ojrf-sidebar-heading {
+  margin-bottom: 10px;
+  color: #22303f;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+#ojrf-sidebar .ojrf-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  /* Equal space either side of the divider. Unbalanced - 4px above, 15px below -
+     it read as belonging to the section beneath it rather than separating two. */
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e7ecf3;
+}
+
+#ojrf-sidebar .ojrf-row-label {
+  flex: 0 0 auto;
+}
+
+/* The whole point of moving: room for a long list instead of two scrolling rows. */
+#ojrf-sidebar .ojrf-cloud {
+  max-height: 46vh;
+}
+
+/* Our pager, in place of the site's numbered one. */
+#ojrf-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 18px 0;
+  font: 600 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#ojrf-pager .ojrf-pager-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: 1px solid #ccd6e4;
+  border-radius: 8px;
+  background: #fff;
+  color: #2f6fdb;
+  text-decoration: none;
+}
+
+#ojrf-pager .ojrf-pager-button:hover {
+  border-color: #2f6fdb;
+  background: #f2f7ff;
+}
+
+#ojrf-pager .ojrf-pager-disabled {
+  border-color: #e6e9ee;
+  background: #f7f8fa;
+  color: #b3bac4;
+  cursor: default;
+}
+
+#ojrf-pager .ojrf-pager-status {
+  color: #8a94a1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The block that collapsed stubs are gathered into. */
+#ojrf-hidden-group {
+  margin: 12px 0;
+  padding: 10px 14px 12px;
+  border: 1px solid #e6e9ee;
+  border-radius: 6px;
+  background: #fcfcfd;
+}
+
+#ojrf-hidden-group .ojrf-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: #8a94a1;
+  font: 600 12px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0.03em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#ojrf-hidden-group .ojrf-group-toggle:hover {
+  color: #2f6fdb;
+}
+
+/* Caret rotates rather than swapping glyphs, so the row never reflows. */
+#ojrf-hidden-group .ojrf-group-caret {
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid currentColor;
+  transition: transform 120ms ease;
+}
+
+#ojrf-hidden-group.ojrf-group-open .ojrf-group-caret {
+  transform: rotate(90deg);
+}
+
+#ojrf-hidden-group .ojrf-group-list {
+  display: none;
+  margin-top: 8px;
+}
+
+#ojrf-hidden-group.ojrf-group-open .ojrf-group-list {
+  display: block;
+}
+
+#ojrf-hidden-group:empty,
+#ojrf-hidden-group:not(:has(.ojrf-stub)) {
+  display: none;
+}
+
+/* A collapsed listing: the site's own node, hidden but never removed. */
+.ojrf-hidden {
+  display: none !important;
+}
+
+.ojrf-stub {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 3px 0;
+  padding: 5px 10px;
+  border-left: 3px solid #d0d7e2;
+  border-radius: 3px;
+  background: #fbfbfc;
+  color: #8a94a1;
+  font: 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ojrf-stub-title {
+  overflow: hidden;
+  flex: 1 1 auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ojrf-stub-rate {
+  flex: 0 0 auto;
+  color: #b0473a;
+  font-variant-numeric: tabular-nums;
+}
+
+.ojrf-stub-show {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border: 1px solid #d0d7e2;
+  border-radius: 3px;
+  background: #fff;
+  color: #2f6fdb;
+  font: inherit;
+  cursor: pointer;
+}
+
+/*
+ * The converted-rate tag.
+ *
+ * The card is a flex container, so a plain inline-block child gets stretched to
+ * the full width by align-items: stretch. align-self/justify-self/fit-content
+ * cover the flex, grid and block cases so the tag always hugs its text.
+ */
+.ojrf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  justify-self: start;
+  width: fit-content;
+  max-width: max-content;
+  margin: 0 6px 5px 0;
+  padding: 1px 8px;
+  border: 1px solid #cfdff8;
+  border-radius: 6px;
+  background: #eaf2fe;
+  color: #1f4f9c;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/*
+ * Placeholder for listings with no employer logo.
+ *
+ * Sized to the real one (80px, 4px radius, 16px gutter) so every card's text
+ * starts at the same x - otherwise the column edge jumps about as you scan.
+ */
+/*
+ * Cards with no logo get a left inset and the placeholder positioned into it,
+ * rather than having their DOM restructured into a flex row.
+ */
+.ojrf-has-avatar {
+  position: relative;
+  padding-left: calc(var(--ojrf-avatar-inset, 16px) + var(--ojrf-avatar-column, 96px)) !important;
+}
+
+.ojrf-avatar-wrap {
+  position: absolute;
+  top: var(--ojrf-avatar-inset, 16px);
+  left: var(--ojrf-avatar-inset, 16px);
+}
+
+.ojrf-avatar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #e8ecf2;
+  border-radius: 4px;
+  background: #f4f6fa;
+  color: #b9c3d1;
+}
+
+/*
+ * Breathing room between the chip row and the description.
+ *
+ * Applied from both sides because the two are not always siblings: on some
+ * cards the description sits outside the anchor that holds the chips.
+ */
+.ojrf-meta-host {
+  margin-bottom: 10px !important;
+}
+
+.ojrf-has-meta .desc {
+  margin-top: 10px;
+}
+
+/* The row of chips on a listing's second line. */
+.ojrf-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+.ojrf-badge-inline {
+  margin: 0;
+  vertical-align: middle;
+}
+
+/* Neutral chips (date, job type) - the rate chip keeps the .ojrf-badge tones. */
+.ojrf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px;
+  border: 1px solid #e3e7ee;
+  border-radius: 6px;
+  background: #f7f8fa;
+  color: #6b7684;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.ojrf-chip-date {
+  border-color: #dfe9f7;
+  background: #f4f8fe;
+  color: #4a6a95;
+}
+
+.ojrf-icon {
+  flex: 0 0 auto;
+  opacity: 0.85;
+}
+
+.ojrf-badge[data-tone="unknown"] {
+  border-color: #e3e6ea;
+  background: #f4f5f7;
+  color: #7c8695;
+}
+
+/* Paid per unit of work, not per unit of time. */
+.ojrf-badge[data-tone="task"] {
+  border-color: #ddd3f5;
+  background: #f2edfd;
+  color: #5b3fa8;
+}
+
+/*
+ * Open, not absent: "Negotiable", "DOE", "Based on Experience".
+ *
+ * Given a colour of its own rather than the grey of an unreadable rate - this
+ * is the one unpriced case where the figure could still land high, so it should
+ * not look like a dead end.
+ */
+.ojrf-badge[data-tone="open"] {
+  border-color: #cddcf3;
+  background: #eef4fd;
+  color: #2f5591;
+}
+
+/* Period assumed, not stated. Visibly distinct from a rate we actually read. */
+.ojrf-badge[data-tone="assumed"] {
+  border-color: #f2ddb4;
+  background: #fdf3e2;
+  color: #8a5300;
+}
+
+/*
+ * Dismiss: the one destructive control on a card, so it stays quiet until the
+ * card is hovered and only takes on its warning colour under the cursor.
+ */
+.ojrf-dismiss,
+.ojrf-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  margin-left: 2px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: #aab2bd;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+.jobpost-cat-box:hover .ojrf-dismiss,
+.jobpost-cat-box:hover .ojrf-save,
+.ojrf-dismiss:focus-visible,
+.ojrf-save:focus-visible {
+  opacity: 1;
+}
+
+.ojrf-dismiss:hover,
+.ojrf-dismiss:focus-visible {
+  border-color: #f2c9c9;
+  background: #fdf1f1;
+  color: #c0392b;
+}
+
+/*
+ * A saved job, which had no appearance at all.
+ *
+ * `saveButton` has always set `.ojrf-save-on`, changed the tooltip and flipped
+ * aria-pressed - but nothing here matched that class, so the two states looked
+ * identical and a click seemed to do nothing.
+ *
+ * The `opacity` is the more serious half. The base rule hides these controls
+ * until the card is hovered, which is right for an action you might take and
+ * wrong for a state you have already set: a saved job was invisible AS saved
+ * unless the cursor happened to be over it, so the list could not be read at a
+ * glance. Saved bookmarks therefore opt out of the hover reveal entirely.
+ *
+ * Accent blue rather than the dismiss red beside it - keeping something is not
+ * a destructive act, and the two controls sit close enough that sharing a
+ * colour would blur them.
+ */
+.ojrf-save-on,
+.jobpost-cat-box:hover .ojrf-save-on,
+.ojrf-save-on:focus-visible {
+  opacity: 1;
+  border-color: #b9cdec;
+  background: #eaf2fd;
+  color: #2f6fdb;
+}
+
+.ojrf-save-on:hover {
+  border-color: #2f6fdb;
+  background: #dbe8fb;
+  color: #1f4f9c;
+}
+
+/* Keyboard users get it unconditionally - there is no hover to reveal it. */
+.ojrf-dismiss:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.14);
+}
+
+/* The individual job page: the buttons on its strip. */
+.ojrf-job-dismiss {
+  padding: 4px 12px;
+  border: 1px solid #d9dee6;
+  border-radius: 7px;
+  background: #fff;
+  color: #6b7684;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+.ojrf-job-dismiss:hover {
+  border-color: #f2c9c9;
+  background: #fdf1f1;
+  color: #c0392b;
+}
+
+/* Already dismissed: the button now offers the way back, so it reads as active. */
+.ojrf-job-dismiss-on {
+  border-color: #f2c9c9;
+  background: #fdf1f1;
+  color: #c0392b;
+}
+
+.ojrf-job-dismiss-on:hover {
+  border-color: #cfd6e0;
+  background: #f4f6f9;
+  color: #46505e;
+}
+
+/*
+ * The job page's own strip, under the site's facts card.
+ *
+ * Drawn like a sibling of that card - white, rounded, the same soft shadow -
+ * so it reads as part of the page rather than a banner laid over it. Chips on
+ * the left, controls on the right, wrapping on a narrow window.
+ */
+.ojrf-job-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin: 8px 0 14px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(20, 40, 80, 0.08);
+}
+
+/*
+ * The site's facts card ends with 30px of card-body padding below the facts
+ * list. On its own that is just a roomy card; with our strip directly under
+ * it, it reads as a hole between the two. Tightened only when our strip is
+ * actually the next sibling, so a page where we did not mount is untouched.
+ */
+.card.job-post:has(+ .ojrf-job-bar) .card-body {
+  padding-bottom: 12px;
+}
+
+.ojrf-job-bar-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* A touch larger than on the results list: this page is read, not scanned. */
+.ojrf-job-bar .ojrf-chip,
+.ojrf-job-bar .ojrf-badge {
+  font-size: 12.5px;
+  padding: 2px 10px;
+}
+
+.ojrf-job-bar-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.ojrf-job-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ojrf-job-bar .ojrf-modal-status {
+  font: 600 12.5px/1.6 inherit;
+  padding: 3px 8px;
+  border: 1px solid #d9dee6;
+  border-radius: 7px;
+  background: #fff;
+  color: #1c2733;
+}
+
+/* The draft-application panel: the box under the actions, on the modal and the
+ * job page alike. White card, roomy, a plain textarea - it is text to read and
+ * copy, not a form the extension fills. */
+.ojrf-draft-panel {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid #dfe4ec;
+  border-radius: 10px;
+  background: #fff;
+  display: grid;
+  gap: 10px;
+}
+
+.ojrf-job-draft .ojrf-draft-panel {
+  margin: 10px 0 18px;
+  box-shadow: 0 2px 10px rgba(20, 40, 80, 0.08);
+  border: none;
+}
+
+.ojrf-draft-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #46505e;
+}
+
+.ojrf-draft-subject {
+  margin: 0;
+  font-size: 13px;
+  color: #46505e;
+}
+
+.ojrf-draft-text {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid #d9dee6;
+  border-radius: 8px;
+  font: 13px/1.55 inherit;
+  color: #1c2733;
+}
+
+.ojrf-draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ojrf-draft-primary {
+  border-color: transparent;
+  background: #2f6fdb;
+  color: #fff;
+}
+
+.ojrf-draft-primary:hover {
+  background: #2560c4;
+  color: #fff;
+}
+
+.ojrf-draft-consent {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: #46505e;
+}
+
+.ojrf-draft-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #46505e;
+}
+
+.ojrf-draft-profile {
+  font: 600 12.5px/1.5 inherit;
+  padding: 3px 8px;
+  border: 1px solid #d9dee6;
+  border-radius: 7px;
+  background: #fff;
+  color: #1c2733;
+}
+
+.ojrf-draft-tone {
+  font: 600 12.5px/1.5 inherit;
+  padding: 3px 8px;
+  border: 1px solid #d9dee6;
+  border-radius: 7px;
+  background: #fff;
+  color: #1c2733;
+  margin-right: auto;
+}
+
+.ojrf-draft-linkbtn {
+  margin-left: 8px;
+  padding: 0 6px;
+  border: 1px solid #cfd9e8;
+  border-radius: 5px;
+  background: #fff;
+  color: #1f4f9c;
+  font: 600 12px/1.5 inherit;
+  cursor: pointer;
+}
+
+/* A chip you can press: an address or a subject line, copied on click. */
+.ojrf-chip-button {
+  cursor: pointer;
+  border-color: #cfd9e8;
+  background: #fff;
+  color: #1f4f9c;
+}
+
+.ojrf-chip-button:hover,
+.ojrf-chip-button:focus-visible {
+  border-color: #2f6fdb;
+  background: #eef4fd;
+  outline: none;
+}
+
+/* Buttons on the strip carry a small icon before the label. */
+.ojrf-job-bar .ojrf-job-dismiss {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Icon-only: a square the height of the text buttons, the glyph centred. */
+.ojrf-job-bar .ojrf-job-icon {
+  width: 32px;
+  height: 30px;
+  padding: 0;
+  justify-content: center;
+  gap: 0;
+}
+
+.ojrf-job-bar .ojrf-job-icon .ojrf-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* An address in the modal, styled like a link you can press. */
+.ojrf-modal-copy-inline {
+  padding: 0 6px;
+  border: 1px solid #cfd9e8;
+  border-radius: 5px;
+  background: #fff;
+  color: #1f4f9c;
+  font: 600 13px/1.6 inherit;
+  cursor: pointer;
+}
+
+.ojrf-modal-copy-inline:hover {
+  border-color: #2f6fdb;
+  background: #eef4fd;
+}
+
+/*
+ * Sorting, done without moving a node: the container becomes a flex column and
+ * every child carries an explicit `order`. Removing this class alone puts the
+ * site's own ordering back.
+ */
+.ojrf-sorted {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Flex would otherwise shrink cards to their content height. */
+.ojrf-sorted > * {
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------------------------ *
+ * The job modal
+ *
+ * Reading a job is a decision made against the list, so it opens over
+ * the list rather than replacing it.
+ * ------------------------------------------------------------------ */
+
+html.ojrf-modal-open,
+html.ojrf-modal-open body {
+  overflow: hidden;
+}
+
+#ojrf-modal {
+  position: fixed;
+  z-index: 2147483000;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #1c2733;
+  font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#ojrf-modal[hidden] {
+  display: none;
+}
+
+.ojrf-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 26, 40, 0.5);
+}
+
+.ojrf-modal-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 80px);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(15, 25, 40, 0.28);
+}
+
+.ojrf-modal-head {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #e7ecf3;
+}
+
+.ojrf-modal-title {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ojrf-modal-tools {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  /* Three related controls, so they sit as one group rather than three
+     separate things scattered across the corner. */
+  gap: 6px;
+}
+
+/*
+ * The header's three controls, all the same shape.
+ *
+ * Icons rather than labels: three differently-sized text controls in one corner
+ * read as clutter, and what each does is better carried by a tooltip than by
+ * competing for width with the job title.
+ */
+.ojrf-modal-tools .ojrf-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #e3e7ee;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7684;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+.ojrf-modal-tools .ojrf-icon-button:hover {
+  border-color: #b9cdec;
+  background: #f4f8fe;
+  color: #2f6fdb;
+  text-decoration: none;
+}
+
+/* Confirmation without a label to change: the button goes green for a moment. */
+.ojrf-modal-copy.ojrf-copied,
+.ojrf-modal-copy.ojrf-copied:hover {
+  border-color: #cfe3d5;
+  background: #eef7f1;
+  color: #256a44;
+}
+
+.ojrf-modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 18px 20px 22px;
+}
+
+/* Pinned below the scrolling body: neither the rate nor the apply button
+   should scroll away part-way down a long description. */
+.ojrf-modal-foot {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid #e7ecf3;
+  background: #fbfcfe;
+  border-radius: 0 0 12px 12px;
+}
+
+.ojrf-modal-foot[hidden] {
+  display: none;
+}
+
+/* The note and draft hosts share the footer's wrapping row. When they hold
+   nothing (draft closed, or no note/tag support) they must not reserve a
+   wrapped row of their own: the growing action row pushes them below it, and
+   an empty row there reads as dead space under the buttons. A host counts as
+   empty when it has no child that is actually shown - the note host keeps a
+   hidden body element even while collapsed. */
+.ojrf-modal-draft:not(:has(> :not([hidden]))),
+.ojrf-modal-notes:not(:has(> :not([hidden]))) {
+  display: none;
+}
+
+/* A brief popup for a notice with nothing to act on (e.g. "sign in from the
+   toolbar"). Fixed and self-dismissing, so it leaves no inline box behind;
+   raised above the job modal, which it can be triggered from. */
+.ojrf-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 2147483001;
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 11px 16px;
+  border-radius: 10px;
+  background: #1c2733;
+  color: #fff;
+  font: 13.5px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 12px 32px rgba(15, 25, 40, 0.35);
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.ojrf-toast-in {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.ojrf-modal-rate {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 14px;
+}
+
+/*
+ * One height for everything in the footer. The dismiss button is shared with
+ * the job page, where it stands alone and sizes itself - here it sits beside
+ * Apply, so the pair has to match.
+ */
+.ojrf-modal-apply,
+.ojrf-modal-actions .ojrf-job-dismiss {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Secondary footer actions as square icons, so the row does not crowd. Their
+   words live in the tooltip and aria-label. */
+.ojrf-modal-actions .ojrf-modal-icon {
+  width: 36px;
+  padding: 0;
+  justify-content: center;
+  gap: 0;
+}
+
+.ojrf-modal-actions .ojrf-modal-icon .ojrf-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ojrf-modal-apply {
+  background: #2f6fdb;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ojrf-modal-apply:hover {
+  background: #2560c4;
+  color: #fff;
+  text-decoration: none;
+}
+
+.ojrf-modal-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px 18px;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid #e7ecf3;
+  border-radius: 9px;
+  background: #fafbfd;
+}
+
+.ojrf-modal-facts dt {
+  margin: 0;
+  color: #8a94a1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ojrf-modal-facts dd {
+  margin: 2px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* The employer's own line breaks are the only structure the description has,
+   and it is inserted as text, so they have to be preserved here. */
+.ojrf-modal-desc {
+  color: #2b3745;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/*
+ * The structured description.
+ *
+ * pre-wrap has to go here: the newlines it preserves were the only structure
+ * the plain path had, and keeping it would double every gap now that real
+ * blocks carry the spacing.
+ */
+.ojrf-modal-desc-rich {
+  white-space: normal;
+}
+
+/*
+ * A listing the auto-refresh brought in while you were reading.
+ *
+ * Marked rather than announced: it arrives at the top of a list you are already
+ * looking at, so it needs to be findable, not attention-grabbing. The tint
+ * fades on its own; the rule stays until the next batch replaces it.
+ */
+[data-ojrf-fresh] {
+  position: relative;
+  animation: ojrf-fresh-in 1.6s ease-out;
+}
+
+[data-ojrf-fresh]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  width: 3px;
+  border-radius: 2px;
+  background: #2f6fdb;
+}
+
+@keyframes ojrf-fresh-in {
+  from {
+    background-color: rgba(47, 111, 219, 0.1);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-ojrf-fresh] {
+    animation: none;
+  }
+}
+
+.ojrf-modal-desc-rich .ojrf-desc-h {
+  margin: 16px 0 6px;
+  color: #1c2733;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ojrf-modal-desc-rich .ojrf-desc-h:first-child {
+  margin-top: 0;
+}
+
+.ojrf-modal-desc-rich .ojrf-desc-p {
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.ojrf-modal-desc-rich .ojrf-desc-list {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  line-height: 1.5;
+}
+
+.ojrf-modal-desc-rich .ojrf-desc-list li {
+  margin: 0 0 4px;
+}
+
+.ojrf-modal-desc-rich hr {
+  height: 0;
+  margin: 14px 0;
+  border: 0;
+  border-top: 1px solid #e2e7ee;
+}
+
+.ojrf-modal-desc-rich strong {
+  font-weight: 700;
+}
+
+.ojrf-modal-actions {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ojrf-modal-note {
+  margin: 0;
+  color: #6b7684;
+}
+
+.ojrf-modal-skeleton {
+  height: 14px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #eef1f6 25%, #f7f9fc 37%, #eef1f6 63%);
+  background-size: 400% 100%;
+  animation: ojrf-shimmer 1.3s ease-in-out infinite;
+}
+
+.ojrf-modal-skeleton:nth-child(2) {
+  width: 70%;
+}
+
+.ojrf-modal-skeleton:nth-child(4) {
+  width: 85%;
+}
+
+/*
+ * Applications: where a job you put work into got to.
+ *
+ * Coloured by status rather than all one tone - "Rejected" and "Offer" are the
+ * two you scan for, and they should not look alike.
+ */
+.ojrf-chip-applied {
+  border-color: #cfe3d5;
+  background: #eef7f1;
+  color: #256a44;
+}
+
+.ojrf-chip-applied[data-status="interviewing"] {
+  border-color: #cddcf3;
+  background: #eef4fd;
+  color: #2f5591;
+}
+
+.ojrf-chip-applied[data-status="offer"] {
+  border-color: #f2ddb4;
+  background: #fdf3e2;
+  color: #8a5300;
+}
+
+.ojrf-chip-applied[data-status="rejected"] {
+  border-color: #e3e6ea;
+  background: #f4f5f7;
+  color: #7c8695;
+}
+
+/*
+ * Status control in the modal footer, sized to match the buttons beside it.
+ *
+ * The native chevron sits hard against the right edge with no say in the
+ * matter, so it is suppressed and drawn as a background - the same treatment
+ * the sort field in the bar gets, which also keeps the two looking alike.
+ */
+.ojrf-modal-status {
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 32px 0 12px;
+  border: 1px solid #d9dee6;
+  border-radius: 8px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='%238a94a1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.4 5 4.8 9 1.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px 6px;
+  color: #46505e;
+  font: 600 13px/1 inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ojrf-modal-status:hover {
+  border-color: #b9cdec;
+}
+
+.ojrf-modal-status:focus-visible {
+  border-color: #2f6fdb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(47, 111, 219, 0.14);
+}
+
+/* A subject line the employer demanded, stated before the description. */
+.ojrf-modal-subject {
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  border: 1px solid #f2ddb4;
+  border-radius: 8px;
+  background: #fdf3e2;
+  color: #8a5300;
+  font-size: 13.5px;
+}
+
+
+/* Copy every loaded listing, beside the settings cog. */
+#ojrf-bar .ojrf-copy-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #ccd6e4;
+  border-radius: 7px;
+  background: #fff;
+  color: #6b7684;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+#ojrf-bar .ojrf-copy-all:hover {
+  border-color: #b9cdec;
+  background: #f4f8fe;
+  color: #2f6fdb;
+}
+
+#ojrf-bar .ojrf-copy-all.ojrf-copied {
+  border-color: #cfe3d5;
+  background: #eef7f1;
+  color: #256a44;
+}
+
+/*
+ * The bar's two utility buttons, grouped.
+ *
+ * Left to the row's own 14px gap they read as two unrelated controls floating
+ * at the end; at 6px they read as one pair sitting beside the counts.
+ */
+#ojrf-bar .ojrf-bar-tools {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Posted since you were last here - the thing you are scanning for. */
+.ojrf-chip-new {
+  border-color: #cddcf3;
+  background: #2f6fdb;
+  color: #fff;
+  font-weight: 700;
+}
+
+/*
+ * An employer with more than one listing on this page.
+ *
+ * Deliberately quiet - it is context, not a verdict. Amber rather than blue so
+ * it does not compete with the New chip, which is the thing being scanned for.
+ */
+/*
+ * The keyboard focus ring. An outline, never a border or a layout change, so
+ * moving it repaints nothing but the ring itself.
+ */
+.ojrf-focused {
+  outline: 2px solid #2f6fdb !important;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Waiting on you. Blue like the status chip it follows, a shade stronger. */
+.ojrf-chip-followup {
+  border-color: #bcd0f0;
+  background: #e4edfb;
+  color: #1f4f9c;
+  font-weight: 700;
+}
+
+/* A view pill: on it is filled like a choice; off it is outlined. */
+.ojrf-ui .ojrf-pill-view {
+  border-color: #dbe1e9;
+}
+
+/* A note you wrote on this employer. Violet: yours, not a warning. */
+.ojrf-chip-note {
+  border-color: #d9d2f0;
+  background: #f4f1fc;
+  color: #4e3f8c;
+  max-width: 260px;
+}
+
+.ojrf-chip-note > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ojrf-chip-employer {
+  border-color: #ecdcc0;
+  background: #fdf6e9;
+  color: #8a6320;
+}
+
+/* ------------------------------------------------------------------ *
+ * The command palette
+ *
+ * Ctrl+K, or Cmd+K on a Mac. Sits above everything, including the job
+ * modal, because it is how you get to the modal in the first place.
+ * ------------------------------------------------------------------ */
+
+html.ojrf-palette-open,
+html.ojrf-palette-open body {
+  overflow: hidden;
+}
+
+#ojrf-palette {
+  position: fixed;
+  z-index: 2147483100;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 14vh 20px 20px;
+  color: #1c2733;
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#ojrf-palette[hidden] {
+  display: none;
+}
+
+.ojrf-palette-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 26, 40, 0.45);
+}
+
+.ojrf-palette-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(620px, 100%);
+  max-height: 60vh;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(15, 25, 40, 0.32);
+}
+
+.ojrf-palette-input {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px 18px;
+  border: 0;
+  border-bottom: 1px solid #e7ecf3;
+  background: none;
+  color: inherit;
+  font: 16px/1.4 inherit;
+}
+
+.ojrf-palette-input:focus {
+  outline: none;
+}
+
+.ojrf-palette-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+}
+
+.ojrf-palette-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.ojrf-palette-item.ojrf-on {
+  background: #eef4fd;
+}
+
+.ojrf-palette-label {
+  flex: 0 1 auto;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ojrf-palette-hint {
+  flex: 0 1 auto;
+  overflow: hidden;
+  color: #8a94a1;
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pushed right so the labels stay in one readable column. */
+.ojrf-palette-kind {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #f2f5fa;
+  color: #7c8695;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ojrf-palette-empty {
+  padding: 18px 12px;
+  color: #8a94a1;
+  text-align: center;
+}
+
+.ojrf-palette-foot {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 14px;
+  padding: 9px 16px;
+  border-top: 1px solid #e7ecf3;
+  background: #fbfcfe;
+  color: #8a94a1;
+  font-size: 12px;
+}
+
+.ojrf-palette-foot kbd {
+  display: inline-block;
+  min-width: 16px;
+  margin-right: 3px;
+  padding: 1px 5px;
+  border: 1px solid #dde3ec;
+  border-radius: 4px;
+  background: #fff;
+  color: #6b7684;
+  font: 600 11px/1.5 inherit;
+  text-align: center;
+}
+
+/*
+ * The palette's advertisement.
+ *
+ * A keyboard shortcut nobody mentions is a shortcut nobody finds, so the bar
+ * carries a visible way in that also states the key. Wider than the icon
+ * buttons beside it on purpose - it is the one control here that has to be
+ * noticed rather than looked for.
+ */
+#ojrf-bar .ojrf-palette-open {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 30px;
+  gap: 7px;
+  padding: 0 9px 0 8px;
+  border: 1px solid #ccd6e4;
+  border-radius: 7px;
+  background: #fff;
+  color: #8a94a1;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+#ojrf-bar .ojrf-palette-open:hover {
+  border-color: #b9cdec;
+  background: #f4f8fe;
+  color: #2f6fdb;
+}
+
+#ojrf-bar .ojrf-palette-open kbd {
+  padding: 1px 5px;
+  border: 1px solid #dde3ec;
+  border-radius: 4px;
+  background: #f7f9fc;
+  color: #6b7684;
+  font: 600 11px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  white-space: nowrap;
+}
+
+#ojrf-bar .ojrf-palette-open:hover kbd {
+  border-color: #cfe0f6;
+  background: #fff;
+  color: #2f6fdb;
+}
+
+/* Only the ends of the distribution are marked - the middle is just normal. */
+.ojrf-standing {
+  margin-left: 4px;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.ojrf-standing-high {
+  color: #1f8a52;
+}
+
+.ojrf-standing-low {
+  color: #b0473a;
+}
+
+/* ------------------------------------------------------------------ *
+ * The preset picker
+ *
+ * Cards rather than a list: a preset is a vocabulary plus a floor, and
+ * neither fits on one line. Sits above the page but below the palette,
+ * which is how you can also reach it.
+ * ------------------------------------------------------------------ */
+
+html.ojrf-presets-open,
+html.ojrf-presets-open body {
+  overflow: hidden;
+}
+
+#ojrf-presets {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#ojrf-presets[hidden] {
+  display: none;
+}
+
+.ojrf-presets-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.55);
+}
+
+.ojrf-presets-panel {
+  position: relative;
+  display: flex;
+  width: min(1060px, calc(100vw - 40px));
+  max-height: calc(100vh - 80px);
+  flex-direction: column;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(16, 24, 40, 0.28);
+}
+
+.ojrf-presets-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid #eceff4;
+}
+
+.ojrf-presets-head h3 {
+  margin: 0 0 4px;
+  color: #16202c;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.ojrf-presets-head p {
+  max-width: 62ch;
+  margin: 0;
+  color: #6b7684;
+  font-size: 13px;
+}
+
+.ojrf-presets-close {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  /* Pushes the button to the right edge whatever the heading's length. */
+  margin-left: auto;
+  border: 1px solid #e3e7ee;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7684;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ojrf-presets-close:hover {
+  border-color: #ccd6e4;
+  background: #f5f7fa;
+  color: #1c2733;
+}
+
+.ojrf-presets-body {
+  flex: 1 1 auto;
+  padding: 6px 22px 18px;
+  overflow-y: auto;
+}
+
+.ojrf-preset-group {
+  margin: 18px 0 10px;
+  color: #97a3b2;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.ojrf-preset-grid {
+  display: grid;
+  gap: 12px;
+  /* Three across, fixed. auto-fit collapsed the spare track and stretched a
+     group of two to full width, so the columns did not line up between one
+     group and the next. A fixed count keeps every card the same size however
+     many are in its group. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ojrf-preset-card {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 15px 13px;
+  border: 1px solid #e3e7ee;
+  border-radius: 11px;
+  background: #fbfcfe;
+}
+
+.ojrf-preset-card:hover {
+  border-color: #b9cdec;
+  background: #f7faff;
+}
+
+.ojrf-preset-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 5px;
+  color: #16202c;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.ojrf-preset-tag {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #e4f3e9;
+  color: #1f8a52;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.ojrf-preset-hint {
+  margin: 0 0 9px;
+  color: #6b7684;
+  font-size: 12.5px;
+}
+
+.ojrf-preset-facts {
+  margin: 0 0 10px;
+  color: #22303f;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ojrf-preset-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  /* Pushes the button to the bottom, so buttons line up across a row of
+     cards whose descriptions are different lengths. */
+  margin-bottom: 12px;
+}
+
+.ojrf-preset-term {
+  padding: 2px 8px;
+  border: 1px solid #e3e7ee;
+  border-radius: 999px;
+  background: #fff;
+  color: #5c6675;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ojrf-preset-more {
+  border-style: dashed;
+  cursor: help;
+}
+
+.ojrf-preset-apply {
+  margin-top: auto;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #2f6fdb;
+  color: #fff;
+  font: 600 13px/1.3 inherit;
+  cursor: pointer;
+}
+
+.ojrf-preset-apply:hover {
+  background: #2560c4;
+}
+
+.ojrf-preset-apply:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* The menu: level filter on the left, "new" on the right ------------------ */
+
+.ojrf-presets-menu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e6eaf1;
+  background: #fbfcfe;
+}
+
+.ojrf-preset-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ojrf-preset-level {
+  padding: 4px 12px;
+  border: 1px solid #d7dee8;
+  border-radius: 999px;
+  background: #fff;
+  color: #4b5768;
+  font: 600 12.5px/1.4 inherit;
+  cursor: pointer;
+}
+
+.ojrf-preset-level:hover {
+  border-color: #b6c2d3;
+}
+
+.ojrf-preset-level.is-on {
+  border-color: #2f6fdb;
+  background: #eaf1fd;
+  color: #1f4c9c;
+}
+
+.ojrf-presets-new {
+  padding: 6px 14px;
+  border: 1px solid #2f6fdb;
+  border-radius: 8px;
+  background: #fff;
+  color: #2f6fdb;
+  font: 600 13px/1.3 inherit;
+  cursor: pointer;
+}
+
+.ojrf-presets-new:hover {
+  background: #eaf1fd;
+}
+
+/* Card actions ------------------------------------------------------------ */
+
+/*
+ * Deliberately quieter than "Use this". Applying is what you came for; editing
+ * is what you do occasionally, and a row of equally loud buttons makes the
+ * common case harder to find.
+ */
+/*
+ * Apply takes the space; the kebab sits beside it at the same height. Auto
+ * top-margin pins the row to the bottom so cards of different text lengths
+ * still line their buttons up across a grid row.
+ */
+.ojrf-preset-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.ojrf-preset-actions .ojrf-preset-apply {
+  flex: 1 1 auto;
+  margin-top: 0;
+}
+
+.ojrf-preset-kebab-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.ojrf-preset-kebab {
+  width: 34px;
+  height: 100%;
+  min-height: 32px;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  background: #fff;
+  color: #4b5768;
+  font: 700 16px/1 inherit;
+  cursor: pointer;
+}
+
+.ojrf-preset-kebab:hover,
+.ojrf-preset-kebab[aria-expanded='true'] {
+  border-color: #b6c2d3;
+  background: #f2f5fa;
+}
+
+/*
+ * Right-aligned and above the card below it. The picker body scrolls, so the
+ * menu is positioned against the card rather than the viewport - it travels
+ * with what it belongs to instead of detaching mid-scroll.
+ */
+.ojrf-preset-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 5;
+  min-width: 168px;
+  padding: 5px;
+  border: 1px solid #dfe5ee;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(20, 35, 60, 0.16);
+}
+
+.ojrf-preset-menu-item {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: #2b3745;
+  font: 500 13px/1.3 inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ojrf-preset-menu-item:hover {
+  background: #f2f5fa;
+}
+
+.ojrf-preset-menu-danger {
+  color: #c0392b;
+}
+
+.ojrf-preset-menu-danger:hover {
+  background: #fdf1f1;
+}
+
+.ojrf-preset-minor {
+  padding: 4px 10px;
+  border: 1px solid #d7dee8;
+  border-radius: 7px;
+  background: #fff;
+  color: #4b5768;
+  font: 600 12px/1.3 inherit;
+  cursor: pointer;
+}
+
+.ojrf-preset-minor:hover {
+  border-color: #b6c2d3;
+  background: #f7f9fc;
+}
+
+.ojrf-preset-danger:hover {
+  border-color: #f2c9c9;
+  background: #fdf1f1;
+  color: #c0392b;
+}
+
+/* The in-modal editor ----------------------------------------------------- */
+
+.ojrf-preset-editor {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 18px 20px;
+  border: 1px solid #2f6fdb;
+  border-radius: 12px;
+  background: #f7f9fe;
+}
+
+.ojrf-preset-editor-title {
+  margin: 0 0 4px;
+  font: 700 15px/1.3 inherit;
+  color: #1c2733;
+}
+
+.ojrf-preset-editor-note {
+  margin: 0 0 12px;
+  color: #6b7684;
+  font-size: 12.5px;
+}
+
+/*
+ * Two columns where there is room, one where there is not. The long fields -
+ * search terms and exclusions - span both, since a comma list wraps badly in a
+ * half-width box.
+ */
+.ojrf-preset-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ojrf-preset-editor-grid > .ojrf-preset-field:nth-child(n + 4) {
+  grid-column: 1 / -1;
+}
+
+.ojrf-preset-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ojrf-preset-field > span {
+  color: #35424f;
+  font: 600 12.5px/1.3 inherit;
+}
+
+.ojrf-preset-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d7dee8;
+  border-radius: 7px;
+  background: #fff;
+  color: inherit;
+  font: 13px/1.4 inherit;
+  box-sizing: border-box;
+}
+
+.ojrf-preset-input:focus {
+  border-color: #2f6fdb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(47, 111, 219, 0.14);
+}
+
+.ojrf-preset-req {
+  border: 0;
+  background: none;
+  color: #c0392b;
+}
+
+.ojrf-preset-editor-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ojrf-preset-editor-actions .ojrf-preset-apply {
+  margin-top: 0;
+}
+
+.ojrf-preset-empty {
+  padding: 24px 4px;
+  color: #6b7684;
+  font-size: 13px;
+}
+
+.ojrf-presets-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 13px 22px;
+  border-top: 1px solid #eceff4;
+  color: #6b7684;
+  font-size: 12.5px;
+}
+
+.ojrf-presets-save {
+  padding: 6px 12px;
+  border: 1px solid #ccd6e4;
+  border-radius: 8px;
+  background: #fff;
+  color: #1c2733;
+  font: 600 13px/1.3 inherit;
+  cursor: pointer;
+}
+
+.ojrf-presets-save:hover {
+  border-color: #2f6fdb;
+  color: #2f6fdb;
+}
+
+/* Same 30x30 box as the copy button beside it, so the row of tools is even. */
+#ojrf-bar .ojrf-presets-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #ccd6e4;
+  border-radius: 7px;
+  background: #fff;
+  color: #6b7684;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+#ojrf-bar .ojrf-presets-open:hover {
+  border-color: #2f6fdb;
+  color: #2f6fdb;
+}
+
+/* Three needs the room. Below it, fewer rather than cramped. */
+@media (max-width: 1000px) {
+  .ojrf-preset-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .ojrf-preset-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/*
+ * Breathing room under the last listing.
+ *
+ * With pages merged in, the final card sat hard against the footer with
+ * nothing between them. Applied to our own marker on the container so it
+ * goes away with everything else when the filter is switched off.
+ */
+/*
+ * The class is repeated on purpose. The container carries Bootstrap's `pb-0`,
+ * which is itself !important - so ours has to be !important too, and at that
+ * point the two tie on specificity and the later stylesheet wins, which is
+ * theirs. Naming our own class twice doubles its specificity without depending
+ * on any of the site's class names.
+ */
+.ojrf-results-padded.ojrf-results-padded {
+  padding-bottom: 48px !important;
+}
+
+
+/*
+ * Who the job is for, when the listing says. Green for a welcome, slate for a
+ * requirement - neither is a warning, so neither borrows the flag's amber.
+ */
+.ojrf-chip-level[data-tone="beginner"] {
+  border-color: #bfe3c9;
+  background: #eaf8ee;
+  color: #1f6b3a;
+}
+
+/* The modal's verdict from the full description, in the chip's own colours. */
+.ojrf-modal-level {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border: 1px solid #bfe3c9;
+  border-radius: 8px;
+  background: #eaf8ee;
+  color: #1f6b3a;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ojrf-modal-level[data-level="experienced"] {
+  border-color: #d5dbe3;
+  background: #f1f4f8;
+  color: #46546a;
+}
+
+.ojrf-chip-level[data-tone="experienced"] {
+  border-color: #d5dbe3;
+  background: #f1f4f8;
+  color: #46546a;
+}
+
+/* A listing that would cost you something. Amber, not red: a warning to read,
+   not an error - plenty of these are worth taking with your eyes open. */
+.ojrf-chip-flag {
+  border-color: #f0d5a8;
+  background: #fdf3e2;
+  color: #92600f;
+  font-weight: 700;
+}
+
+/*
+ * Your own search terms, marked where they appear in a listing.
+ *
+ * Painted through the CSS Custom Highlight API, so no node in the site's
+ * description is wrapped, split or otherwise touched. Only colour is set:
+ * ::highlight cannot change layout, which is exactly why it suits this.
+ */
+::highlight(ojrf-term) {
+  background-color: #fff2b8;
+  color: #4a3b00;
+}
+
+/*
+ * A caveat about the employer, at the top of the modal.
+ *
+ * Amber and quiet. These are facts worth knowing before applying, not
+ * accusations - everyone's account is new once.
+ */
+.ojrf-modal-warning {
+  margin: 0 0 10px;
+  padding: 9px 12px;
+  border-left: 3px solid #e0a94a;
+  border-radius: 4px;
+  background: #fdf6e9;
+  color: #7a5a12;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Modal per-job note and tags */
+.ojrf-modal-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+}
+.ojrf-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.ojrf-modal-tag {
+  border: 1px solid var(--ojrf-accent, #2f6fdb);
+  background: var(--ojrf-accent-soft, #eef2ff);
+  color: inherit;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ojrf-modal-tag::after {
+  content: " ×";
+  opacity: 0.6;
+}
+.ojrf-modal-tag-add {
+  border: 1px dashed var(--ojrf-border, #d1d5db);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  width: 84px;
+  background: transparent;
+  color: inherit;
+}
+/* Suggestion chips (defaults + used tags) drop onto their own row. */
+.ojrf-modal-tag-suggest {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+.ojrf-modal-tag-pick {
+  border: 1px solid var(--ojrf-border, #d1d5db);
+  background: var(--ojrf-surface, #fff);
+  color: inherit;
+  border-radius: 999px;
+  padding: 1px 9px;
+  font-size: 11.5px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+.ojrf-modal-tag-pick:hover { opacity: 1; }
+.ojrf-modal-note {
+  width: 100%;
+  resize: vertical;
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid var(--ojrf-border, #d1d5db);
+  border-radius: 6px;
+  background: var(--ojrf-surface, #fff);
+  color: inherit;
+  box-sizing: border-box;
+}
+
+/* Collapsible note & tags. The toggle is an icon in the action row (styled by
+   the shared .ojrf-modal-icon rules); only its body needs styling here. */
+.ojrf-modal-notes-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.ojrf-modal-notes-body[hidden] {
+  display: none;
+}
+
+/* With the toggle moved into the action row, the notes host only holds the
+   collapsible body; no top gap when it is closed. */
+.ojrf-modal-notes { margin-top: 0; gap: 0; }
+.ojrf-modal-notes-body { margin-top: 8px; }
+.ojrf-modal-save-on { color: var(--ojrf-accent, #2f6fdb); }
+.ojrf-modal-save-on svg { fill: currentColor; }
+
+/*
+ * The mini-app windows.
+ *
+ * The window itself is WinBox (vendor/winbox) - dragging, resizing, minimise,
+ * maximise and stacking are its job, and it brings its own stylesheet. What is
+ * here is only the skin: our colours on its chrome, so a window over
+ * OnlineJobs.ph looks like part of this extension rather than a library demo.
+ *
+ * Scoped to .ojrf-winbox, the class every window of ours carries, so nothing
+ * here can reach a WinBox some other extension put on the page.
+ */
+.winbox.ojrf-winbox {
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.34);
+  /* The frame shows only as a hairline around the body; the title bar paints
+     itself. A saturated slab of accent colour across a maximised board is a
+     lot of blue for a window you sit in all day. */
+  background: #d8e0ea;
+  overflow: hidden;
+}
+.winbox.ojrf-winbox.max,
+.winbox.ojrf-winbox.min {
+  /* Square against a screen edge; a rounded corner there reads as a fault. */
+  border-radius: 0;
+}
+/*
+ * A light title bar, like the rest of the extension.
+ *
+ * WinBox's default is a coloured slab with white glyphs, which reads as a demo
+ * of WinBox rather than as part of this extension. The control icons are
+ * repainted from core/icons.js in widget-shell.js to match - white ones would
+ * be invisible here.
+ */
+.winbox.ojrf-winbox .wb-header {
+  background: #fff;
+  border-bottom: 1px solid #e3e9f1;
+  color: #1c2733;
+  font: 600 13px/35px -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+.winbox.ojrf-winbox .wb-title {
+  color: #1c2733;
+  font-weight: 650;
+  font-size: 13px;
+  letter-spacing: 0.1px;
+}
+/* The focused window's title bar carries a thin accent edge, so which window
+   you are typing into is legible when several are open. */
+.winbox.ojrf-winbox.focus .wb-header {
+  box-shadow: inset 0 2px 0 #2f6fdb;
+}
+/*
+ * The controls sit INSIDE the bar, not across it.
+ *
+ * WinBox gives each button `height: 100%`, which is right for a flat coloured
+ * header and wrong for ours: the hover chip then ran the full 35px and painted
+ * over the focus accent at the top and the border at the bottom, so hovering
+ * looked like the button had escaped the title bar. A flex row centring a
+ * shorter box leaves a few pixels of clearance above and below.
+ */
+.winbox.ojrf-winbox .wb-control {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  padding-right: 6px;
+  box-sizing: border-box;
+}
+.winbox.ojrf-winbox .wb-control > * {
+  height: 26px;
+  width: 28px;
+  border-radius: 6px;
+  background-size: 15px auto;
+  background-position: center;
+  transition: background-color 0.12s ease, opacity 0.12s ease;
+}
+.winbox.ojrf-winbox .wb-control > *:hover {
+  background-color: #eef2f8;
+}
+.winbox.ojrf-winbox .wb-close:hover {
+  background-color: #fdf1f1;
+}
+.winbox.ojrf-winbox .wb-body {
+  background: #f4f6f9;
+  /* The body is one iframe; a margin here would show as a border round it. */
+  margin: 0;
+}
+.winbox.ojrf-winbox .wb-body iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* WinBox draws its buttons as background images; keep them legible on ours. */
+.winbox.ojrf-winbox .wb-control * {
+  opacity: 0.82;
+  transition: opacity 0.12s ease;
+}
+.winbox.ojrf-winbox .wb-control *:hover {
+  opacity: 1;
+}
+
+/*
+ * The dock.
+ *
+ * A translucent bar of icons pinned to an edge, the arrangement everybody
+ * already knows. Below the widget shell in z-order but above everything the
+ * site draws, so opening a widget covers the dock rather than the dock
+ * floating over its own modal.
+ */
+#ojrf-dock {
+  position: fixed;
+  z-index: 2147482000;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(24, 32, 45, 0.82);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.34);
+  font: 500 12px/1 -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+#ojrf-dock[hidden] { display: none; }
+#ojrf-dock[data-edge="bottom"] { bottom: 18px; flex-direction: row; }
+#ojrf-dock[data-edge="left"] { left: 14px; flex-direction: column; }
+#ojrf-dock[data-edge="right"] { right: 14px; flex-direction: column; }
+#ojrf-dock.is-dragging {
+  /* No transition while dragging, or the dock lags the pointer. */
+  transition: none;
+  cursor: grabbing;
+}
+
+.ojrf-dock-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #dbe3ee;
+  cursor: pointer;
+  transition: transform 130ms ease, background-color 130ms ease, color 130ms ease;
+}
+.ojrf-dock-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  /* The magnify everyone expects, kept small: a full macOS bounce over someone
+     else's page would be a toy, not a tool. */
+  transform: scale(1.12);
+}
+.ojrf-dock-item:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.9);
+}
+/* The open widget keeps a lit pip under its icon, like a running app. */
+.ojrf-dock-item.is-open { background: rgba(96, 165, 250, 0.2); color: #fff; }
+.ojrf-dock-item.is-open::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #60a5fa;
+}
+#ojrf-dock[data-edge="bottom"] .ojrf-dock-item.is-open::after { bottom: -3px; }
+#ojrf-dock[data-edge="left"] .ojrf-dock-item.is-open::after { left: -3px; }
+#ojrf-dock[data-edge="right"] .ojrf-dock-item.is-open::after { right: -3px; }
+
+/* The name appears on hover, the way a dock label does - never taking layout. */
+.ojrf-dock-name {
+  position: absolute;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: rgba(17, 24, 39, 0.96);
+  color: #fff;
+  font-size: 11.5px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+.ojrf-dock-item:hover .ojrf-dock-name,
+.ojrf-dock-item:focus-visible .ojrf-dock-name { opacity: 1; }
+#ojrf-dock[data-edge="bottom"] .ojrf-dock-name { bottom: calc(100% + 8px); }
+#ojrf-dock[data-edge="left"] .ojrf-dock-name { left: calc(100% + 8px); }
+#ojrf-dock[data-edge="right"] .ojrf-dock-name { right: calc(100% + 8px); }
+
+/* A lock corner on the paid tools, so it is honest before you click. */
+.ojrf-dock-lock {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  color: #f0b429;
+  opacity: 0.9;
+}
+
+/* The hairline between the free tools and the paid ones. */
+.ojrf-dock-rule {
+  flex: 0 0 auto;
+  background: rgba(255, 255, 255, 0.2);
+}
+#ojrf-dock[data-edge="bottom"] .ojrf-dock-rule { width: 1px; height: 26px; margin: 0 3px; }
+#ojrf-dock[data-edge="left"] .ojrf-dock-rule,
+#ojrf-dock[data-edge="right"] .ojrf-dock-rule { height: 1px; width: 26px; margin: 3px 0; }
+
+/* The grip: the only part that starts a drag, so the icons stay clickable. */
+.ojrf-dock-grip {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.26);
+  cursor: grab;
+}
+.ojrf-dock-grip:hover { background: rgba(255, 255, 255, 0.5); }
+#ojrf-dock[data-edge="bottom"] .ojrf-dock-grip { width: 4px; height: 22px; margin-left: 4px; }
+#ojrf-dock[data-edge="left"] .ojrf-dock-grip,
+#ojrf-dock[data-edge="right"] .ojrf-dock-grip { height: 4px; width: 22px; margin-top: 4px; }
+
+.ojrf-modal-tag-hint {
+  font-size: 12px;
+  color: #6b7684;
+  align-self: center;
+}
+
+/* A dot on the note/tags toggle when the collapsed panel holds a note or tags. */
+.ojrf-notes-toggle { position: relative; }
+.ojrf-notes-toggle.ojrf-has-notes::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2f6fdb;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+
+/* ---- AI insights panel (paid analysis) on the job page ---- */
+/* Bottom margin so the panel does not sit flush against the site's next block. */
+.ojrf-ai-host { margin-top: 8px; margin-bottom: 18px; }
+.ojrf-ai-panel { border: 1px solid #dde3ec; border-radius: 10px; padding: 12px 14px; background: #fbfcfe; }
+.ojrf-ai-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.ojrf-ai-title { font-weight: 700; font-size: 14px; color: #1c2733; }
+.ojrf-ai-cost { font-size: 12px; color: #7c8695; }
+.ojrf-ai-lenses { display: flex; flex-wrap: wrap; gap: 6px; }
+.ojrf-ai-lens {
+  border: 1px solid #cfd8e6; border-radius: 999px; background: #fff; color: #2f6fdb;
+  font: inherit; font-size: 12.5px; padding: 5px 12px; cursor: pointer;
+}
+.ojrf-ai-lens:hover { border-color: #2f6fdb; background: #f2f7ff; }
+.ojrf-ai-result:not(:empty) { margin-top: 10px; }
+.ojrf-ai-analysis { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #1c2733; }
+.ojrf-ai-verdict-row { display: flex; align-items: center; gap: 10px; }
+.ojrf-ai-verdict { font-weight: 700; border-radius: 6px; padding: 3px 10px; color: #fff; font-size: 13px; }
+.ojrf-ai-verdict-apply { background: #16a34a; }
+.ojrf-ai-verdict-maybe { background: #d97706; }
+.ojrf-ai-verdict-skip { background: #dc2626; }
+.ojrf-ai-conf { color: #7c8695; font-size: 12px; }
+.ojrf-ai-caution { color: #b0473a; margin: 0; }
+.ojrf-ai-score-row { display: flex; align-items: baseline; gap: 6px; }
+.ojrf-ai-score { font-size: 20px; font-weight: 700; color: #2f6fdb; }
+.ojrf-ai-scorebar { height: 6px; border-radius: 999px; background: #e7ecf3; overflow: hidden; }
+.ojrf-ai-scorefill { height: 100%; background: #2f6fdb; }
+.ojrf-ai-sub { font-weight: 700; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; color: #8a94a1; margin-top: 2px; }
+.ojrf-ai-note { margin: 0; line-height: 1.5; }
+.ojrf-ai-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
+.ojrf-ai-good li::marker { color: #16a34a; }
+.ojrf-ai-bad li::marker { color: #dc2626; }
+.ojrf-ai-risk { display: inline-block; font-weight: 700; border-radius: 6px; padding: 3px 10px; font-size: 12.5px; text-transform: capitalize; }
+.ojrf-ai-risk-low { background: #dcfce7; color: #15803d; }
+.ojrf-ai-risk-medium { background: #fef3c7; color: #b45309; }
+.ojrf-ai-risk-high { background: #fee2e2; color: #b91c1c; }
+.ojrf-ai-msg { font-size: 13px; color: #4b5563; }
+.ojrf-ai-error { margin: 0; font-size: 13px; color: #b0473a; }
+
+/* Buy-credits button in the AI panel. */
+.ojrf-ai-headright { display: inline-flex; align-items: center; gap: 10px; }
+.ojrf-ai-buy {
+  border: 0; border-radius: 8px; background: #16a34a; color: #fff;
+  font: inherit; font-size: 12.5px; font-weight: 600; padding: 5px 12px; cursor: pointer;
+}
+.ojrf-ai-buy:hover { background: #15803d; }
+.ojrf-ai-buy:disabled { opacity: 0.6; cursor: default; }
+
+/* A minimised widget's dock icon: still lit, but not the frontmost thing. */
+.ojrf-dock-item.is-minimised { background: rgba(255, 255, 255, 0.08); }
+.ojrf-dock-item.is-minimised::after { opacity: 0.5; }
